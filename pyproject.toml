@@ -8,7 +8,7 @@ requires-python = ">=3.11"
 dev = [
     "pytest",
     "pytest-golden",
-    "ruff",
+    "ruff==0.15.13",  # формат-проверка чувствительна к версии — пиним
     "mypy",
     "ruamel.yaml",  # scripts/normalize_goldens.py
 ]

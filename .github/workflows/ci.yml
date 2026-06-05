@@ -19,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install ruff mypy pytest pytest-golden
+          pip install ruff==0.15.13 mypy pytest pytest-golden
 
       - name: Check formatting
         run: ruff format --check .

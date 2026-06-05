@@ -1,10 +1,14 @@
 all: format lint test
 
+# Прогон перед каждым коммитом: те же проверки, что и в CI.
+check: lint test
+
 format:
 	ruff format . --exclude brainfuck-master
 
 lint:
-	ruff check --fix . --exclude brainfuck-master
+	ruff format --check . --exclude brainfuck-master
+	ruff check . --exclude brainfuck-master
 	mypy --strict isa.py
 
 test:

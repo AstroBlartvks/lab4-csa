@@ -13,6 +13,7 @@ from isa import Instruction, Opcode, to_bytes, to_hex
 _MMIO_OUT = 0xFFFFFFF2
 _MMIO_IN = 0xFFFFFFF0
 
+
 def _is_str_prefix(source: str, i: int) -> bool:
     return source[i : i + 3] in ('." ', 'S" ')
 
@@ -161,31 +162,31 @@ def _build_print_num(offset: int) -> tuple[list[Instruction], int]:
     _op(code, Opcode.DROP)
 
     _lit(code, 0)
-    _op(code, Opcode.SWAP)            # (n, counter) → (counter, n): TOS=n, NOS=counter
+    _op(code, Opcode.SWAP)  # (n, counter) → (counter, n): TOS=n, NOS=counter
     push_loop = w()
     # стек TOS=n, NOS=counter. Если n=0 → выйти.
     _op(code, Opcode.DUP)
     jz_push = len(code)
-    _op(code, Opcode.JZ, 0)          # JZ снимает дубль; если n=0 → exit
+    _op(code, Opcode.JZ, 0)  # JZ снимает дубль; если n=0 → exit
     _op(code, Opcode.DUP)
     _lit(code, 10)
     _op(code, Opcode.MOD)
-    _op(code, Opcode.TO_R)            # digit → RS
+    _op(code, Opcode.TO_R)  # digit → RS
     _lit(code, 10)
-    _op(code, Opcode.DIV)             # n/10
+    _op(code, Opcode.DIV)  # n/10
     _op(code, Opcode.SWAP)
     _lit(code, 1)
-    _op(code, Opcode.ADD)             # counter+1
+    _op(code, Opcode.ADD)  # counter+1
     _op(code, Opcode.SWAP)
     _op(code, Opcode.JMP, push_loop)
     code[jz_push]["operand"] = w()
-    _op(code, Opcode.DROP)            # drop n=0
+    _op(code, Opcode.DROP)  # drop n=0
 
     pop_loop = w()
     # стек: (counter). Если counter=0 → завершить.
     _op(code, Opcode.DUP)
     jz_pop = len(code)
-    _op(code, Opcode.JZ, 0)           # JZ снимает дубль; если 0 → done
+    _op(code, Opcode.JZ, 0)  # JZ снимает дубль; если 0 → done
     _lit(code, 1)
     _op(code, Opcode.SUB)
     _op(code, Opcode.R_FROM)
@@ -311,7 +312,7 @@ def _handle_special(  # noqa: C901
         return idx, in_def, cur
 
     if tok == "repeat":
-        jz_ii = ctrl.pop()   # instruction index of JZ (from while)
+        jz_ii = ctrl.pop()  # instruction index of JZ (from while)
         begin_w = ctrl.pop()  # word offset of begin target
         _op(cur, Opcode.JMP, begin_w)
         cur[jz_ii]["operand"] = _wlen(cur)  # JZ target = word offset after JMP
@@ -395,15 +396,15 @@ def _emit_io_word(tok: str, cur: list[Instruction], addr_print_num: int) -> bool
 
 
 _COMPOUND: dict[str, list[tuple[bool, Opcode | int]]] = {
-    "0=":     [(True, 0), (False, Opcode.EQ)],
-    "<>":     [(False, Opcode.EQ), (False, Opcode.INVERT)],
+    "0=": [(True, 0), (False, Opcode.EQ)],
+    "<>": [(False, Opcode.EQ), (False, Opcode.INVERT)],
     "negate": [(False, Opcode.INVERT), (True, 1), (False, Opcode.ADD)],
-    "nip":    [(False, Opcode.SWAP), (False, Opcode.DROP)],
-    "rot":    [(False, Opcode.TO_R), (False, Opcode.SWAP), (False, Opcode.R_FROM), (False, Opcode.SWAP)],
-    ">=":     [(False, Opcode.LT), (False, Opcode.INVERT)],
-    "<=":     [(False, Opcode.GT), (False, Opcode.INVERT)],
-    "2dup":   [(False, Opcode.OVER), (False, Opcode.OVER)],
-    "2drop":  [(False, Opcode.DROP), (False, Opcode.DROP)],
+    "nip": [(False, Opcode.SWAP), (False, Opcode.DROP)],
+    "rot": [(False, Opcode.TO_R), (False, Opcode.SWAP), (False, Opcode.R_FROM), (False, Opcode.SWAP)],
+    ">=": [(False, Opcode.LT), (False, Opcode.INVERT)],
+    "<=": [(False, Opcode.GT), (False, Opcode.INVERT)],
+    "2dup": [(False, Opcode.OVER), (False, Opcode.OVER)],
+    "2drop": [(False, Opcode.DROP), (False, Opcode.DROP)],
 }
 
 
@@ -420,7 +421,7 @@ def _emit_builtin_word(tok: str, cur: list[Instruction], addr_print_num: int) ->
     if tok in _COMPOUND:
         for is_lit, val in _COMPOUND[tok]:
             if is_lit:
-                _lit(cur, val)  # type: ignore[arg-type]
+                _lit(cur, val)
             else:
                 _op(cur, val)  # type: ignore[arg-type]
         return True
