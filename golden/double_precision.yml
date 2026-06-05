@@ -1,0 +1,1099 @@
+in_source: |
+  \ 64-bit arithmetic: compute 20! using (lo hi) pair in variables
+
+  variable dlo  variable dhi
+  variable i
+  variable leading
+
+  variable _n  variable _lo_lo  variable _lo_hi
+  variable _prod_lo  variable _prod_hi
+  variable _sum  variable _carry
+
+  : lo_uge
+    over 0 < over 0 < =
+    if >= else drop 0 < then
+  ;
+
+  : dmul_n
+    _n !
+    dlo @ 0xFFFF and _lo_lo !
+    dlo @ 0xFFFF0000 and 0x10000 /
+    dup 0 < if 0x10000 + then
+    _lo_hi !
+    _lo_lo @ _n @ * _prod_lo !
+    _lo_hi @ _n @ * _prod_hi !
+    _prod_hi @ 0xFFFF and 0x10000 * _prod_lo @ + _sum !
+    _sum @ _prod_lo @ lo_uge invert _carry !
+    _prod_hi @ 0x10000 / _carry @ negate + dhi @ _n @ * + dhi !
+    _sum @ dlo !
+  ;
+
+  variable p0lo   variable p1lo   variable p2lo   variable p3lo
+  variable p4lo   variable p5lo   variable p6lo   variable p7lo
+  variable p8lo   variable p9lo   variable p10lo  variable p11lo
+  variable p12lo  variable p13lo  variable p14lo  variable p15lo
+  variable p16lo  variable p17lo  variable p18lo
+  variable p0hi   variable p1hi   variable p2hi   variable p3hi
+  variable p4hi   variable p5hi   variable p6hi   variable p7hi
+  variable p8hi   variable p9hi   variable p10hi  variable p11hi
+  variable p12hi  variable p13hi  variable p14hi  variable p15hi
+  variable p16hi  variable p17hi  variable p18hi
+
+  : init_pow
+    1 p0lo !  0 p0hi !
+    10 p1lo !  0 p1hi !
+    100 p2lo !  0 p2hi !
+    1000 p3lo !  0 p3hi !
+    10000 p4lo !  0 p4hi !
+    100000 p5lo !  0 p5hi !
+    1000000 p6lo !  0 p6hi !
+    10000000 p7lo !  0 p7hi !
+    100000000 p8lo !  0 p8hi !
+    1000000000 p9lo !  0 p9hi !
+    1410065408 p10lo !  2 p10hi !
+    1215752192 p11lo !  23 p11hi !
+    -727379968 p12lo !  232 p12hi !
+    1316134912 p13lo !  2328 p13hi !
+    276447232 p14lo !  23283 p14hi !
+    -1530494976 p15lo !  232830 p15hi !
+    1874919424 p16lo !  2328306 p16hi !
+    1569325056 p17lo !  23283064 p17hi !
+    -1486618624 p18lo !  232830643 p18hi !
+  ;
+
+  variable pow_lo  variable pow_hi
+
+  : dge_pow
+    dhi @ pow_hi @ = if
+      dlo @ pow_lo @ lo_uge
+    else
+      dhi @ pow_hi @ >
+    then
+  ;
+
+  : dsub_pow
+    dlo @ pow_lo @ lo_uge invert >r
+    dlo @ pow_lo @ -
+    dhi @ pow_hi @ - r> negate -
+    dhi ! dlo !
+  ;
+
+  : emit_pow
+    0
+    begin dge_pow while dsub_pow 1+ repeat
+    dup 0 = leading @ and if
+      drop
+    else
+      0 leading !
+      48 + emit
+    then
+  ;
+
+  : d.
+    1 leading !
+    p18lo @ pow_lo !  p18hi @ pow_hi !  emit_pow
+    p17lo @ pow_lo !  p17hi @ pow_hi !  emit_pow
+    p16lo @ pow_lo !  p16hi @ pow_hi !  emit_pow
+    p15lo @ pow_lo !  p15hi @ pow_hi !  emit_pow
+    p14lo @ pow_lo !  p14hi @ pow_hi !  emit_pow
+    p13lo @ pow_lo !  p13hi @ pow_hi !  emit_pow
+    p12lo @ pow_lo !  p12hi @ pow_hi !  emit_pow
+    p11lo @ pow_lo !  p11hi @ pow_hi !  emit_pow
+    p10lo @ pow_lo !  p10hi @ pow_hi !  emit_pow
+    p9lo  @ pow_lo !  p9hi  @ pow_hi !  emit_pow
+    p8lo  @ pow_lo !  p8hi  @ pow_hi !  emit_pow
+    p7lo  @ pow_lo !  p7hi  @ pow_hi !  emit_pow
+    p6lo  @ pow_lo !  p6hi  @ pow_hi !  emit_pow
+    p5lo  @ pow_lo !  p5hi  @ pow_hi !  emit_pow
+    p4lo  @ pow_lo !  p4hi  @ pow_hi !  emit_pow
+    p3lo  @ pow_lo !  p3hi  @ pow_hi !  emit_pow
+    p2lo  @ pow_lo !  p2hi  @ pow_hi !  emit_pow
+    p1lo  @ pow_lo !  p1hi  @ pow_hi !  emit_pow
+    0
+    p0lo @ pow_lo !  p0hi @ pow_hi !
+    begin dge_pow while dsub_pow 1+ repeat
+    48 + emit
+  ;
+
+  init_pow
+
+  1 dlo !  0 dhi !
+  2 i !
+  begin i @ 20 <= while
+    i @ dmul_n
+    i @ 1 + i !
+  repeat
+
+  d. cr
+in_stdin: ''
+out_code_hex: |-
+  0  - 400002F5 - JMP 757
+  1  - 11000000 - DUP
+  2  - 30000000 - LOAD
+  3  - 11000000 - DUP
+  4  - 4100000C - JZ 12
+  5  - 10000000 - LIT
+  6  - FFFFFFF2 - <value -14>
+  7  - 31000000 - STORE
+  8  - 10000000 - LIT
+  9  - 00000001 - <value 1>
+  10  - 20000000 - ADD
+  11  - 40000001 - JMP 1
+  12  - 12000000 - DROP
+  13  - 12000000 - DROP
+  14  - 43000000 - RET
+  15  - 11000000 - DUP
+  16  - 10000000 - LIT
+  17  - 00000000 - <value 0>
+  18  - 25000000 - EQ
+  19  - 4100001B - JZ 27
+  20  - 12000000 - DROP
+  21  - 10000000 - LIT
+  22  - 00000030 - <value 48>
+  23  - 10000000 - LIT
+  24  - FFFFFFF2 - <value -14>
+  25  - 31000000 - STORE
+  26  - 43000000 - RET
+  27  - 11000000 - DUP
+  28  - 10000000 - LIT
+  29  - 00000000 - <value 0>
+  30  - 26000000 - LT
+  31  - 11000000 - DUP
+  32  - 4100002C - JZ 44
+  33  - 10000000 - LIT
+  34  - 0000002D - <value 45>
+  35  - 10000000 - LIT
+  36  - FFFFFFF2 - <value -14>
+  37  - 31000000 - STORE
+  38  - 13000000 - SWAP
+  39  - 29000000 - INVERT
+  40  - 10000000 - LIT
+  41  - 00000001 - <value 1>
+  42  - 20000000 - ADD
+  43  - 13000000 - SWAP
+  44  - 12000000 - DROP
+  45  - 10000000 - LIT
+  46  - 00000000 - <value 0>
+  47  - 13000000 - SWAP
+  48  - 11000000 - DUP
+  49  - 41000040 - JZ 64
+  50  - 11000000 - DUP
+  51  - 10000000 - LIT
+  52  - 0000000A - <value 10>
+  53  - 24000000 - MOD
+  54  - 50000000 - >R
+  55  - 10000000 - LIT
+  56  - 0000000A - <value 10>
+  57  - 23000000 - DIV
+  58  - 13000000 - SWAP
+  59  - 10000000 - LIT
+  60  - 00000001 - <value 1>
+  61  - 20000000 - ADD
+  62  - 13000000 - SWAP
+  63  - 40000030 - JMP 48
+  64  - 12000000 - DROP
+  65  - 11000000 - DUP
+  66  - 4100004E - JZ 78
+  67  - 10000000 - LIT
+  68  - 00000001 - <value 1>
+  69  - 21000000 - SUB
+  70  - 51000000 - R>
+  71  - 10000000 - LIT
+  72  - 00000030 - <value 48>
+  73  - 20000000 - ADD
+  74  - 10000000 - LIT
+  75  - FFFFFFF2 - <value -14>
+  76  - 31000000 - STORE
+  77  - 40000041 - JMP 65
+  78  - 12000000 - DROP
+  79  - 43000000 - RET
+  80  - 10000000 - LIT
+  81  - 0000031B - <value 795>
+  82  - 43000000 - RET
+  83  - 10000000 - LIT
+  84  - 0000031C - <value 796>
+  85  - 43000000 - RET
+  86  - 10000000 - LIT
+  87  - 0000031D - <value 797>
+  88  - 43000000 - RET
+  89  - 10000000 - LIT
+  90  - 0000031E - <value 798>
+  91  - 43000000 - RET
+  92  - 10000000 - LIT
+  93  - 0000031F - <value 799>
+  94  - 43000000 - RET
+  95  - 10000000 - LIT
+  96  - 00000320 - <value 800>
+  97  - 43000000 - RET
+  98  - 10000000 - LIT
+  99  - 00000321 - <value 801>
+  100  - 43000000 - RET
+  101  - 10000000 - LIT
+  102  - 00000322 - <value 802>
+  103  - 43000000 - RET
+  104  - 10000000 - LIT
+  105  - 00000323 - <value 803>
+  106  - 43000000 - RET
+  107  - 10000000 - LIT
+  108  - 00000324 - <value 804>
+  109  - 43000000 - RET
+  110  - 10000000 - LIT
+  111  - 00000325 - <value 805>
+  112  - 43000000 - RET
+  113  - 14000000 - OVER
+  114  - 10000000 - LIT
+  115  - 00000000 - <value 0>
+  116  - 26000000 - LT
+  117  - 14000000 - OVER
+  118  - 10000000 - LIT
+  119  - 00000000 - <value 0>
+  120  - 26000000 - LT
+  121  - 25000000 - EQ
+  122  - 4100007E - JZ 126
+  123  - 26000000 - LT
+  124  - 29000000 - INVERT
+  125  - 40000082 - JMP 130
+  126  - 12000000 - DROP
+  127  - 10000000 - LIT
+  128  - 00000000 - <value 0>
+  129  - 26000000 - LT
+  130  - 43000000 - RET
+  131  - 4200005C - CALL 92
+  132  - 31000000 - STORE
+  133  - 42000050 - CALL 80
+  134  - 30000000 - LOAD
+  135  - 10000000 - LIT
+  136  - 0000FFFF - <value 65535>
+  137  - 27000000 - AND
+  138  - 4200005F - CALL 95
+  139  - 31000000 - STORE
+  140  - 42000050 - CALL 80
+  141  - 30000000 - LOAD
+  142  - 10000000 - LIT
+  143  - FFFF0000 - <value -65536>
+  144  - 27000000 - AND
+  145  - 10000000 - LIT
+  146  - 00010000 - <value 65536>
+  147  - 23000000 - DIV
+  148  - 11000000 - DUP
+  149  - 10000000 - LIT
+  150  - 00000000 - <value 0>
+  151  - 26000000 - LT
+  152  - 4100009C - JZ 156
+  153  - 10000000 - LIT
+  154  - 00010000 - <value 65536>
+  155  - 20000000 - ADD
+  156  - 42000062 - CALL 98
+  157  - 31000000 - STORE
+  158  - 4200005F - CALL 95
+  159  - 30000000 - LOAD
+  160  - 4200005C - CALL 92
+  161  - 30000000 - LOAD
+  162  - 22000000 - MUL
+  163  - 42000065 - CALL 101
+  164  - 31000000 - STORE
+  165  - 42000062 - CALL 98
+  166  - 30000000 - LOAD
+  167  - 4200005C - CALL 92
+  168  - 30000000 - LOAD
+  169  - 22000000 - MUL
+  170  - 42000068 - CALL 104
+  171  - 31000000 - STORE
+  172  - 42000068 - CALL 104
+  173  - 30000000 - LOAD
+  174  - 10000000 - LIT
+  175  - 0000FFFF - <value 65535>
+  176  - 27000000 - AND
+  177  - 10000000 - LIT
+  178  - 00010000 - <value 65536>
+  179  - 22000000 - MUL
+  180  - 42000065 - CALL 101
+  181  - 30000000 - LOAD
+  182  - 20000000 - ADD
+  183  - 4200006B - CALL 107
+  184  - 31000000 - STORE
+  185  - 4200006B - CALL 107
+  186  - 30000000 - LOAD
+  187  - 42000065 - CALL 101
+  188  - 30000000 - LOAD
+  189  - 42000071 - CALL 113
+  190  - 29000000 - INVERT
+  191  - 4200006E - CALL 110
+  192  - 31000000 - STORE
+  193  - 42000068 - CALL 104
+  194  - 30000000 - LOAD
+  195  - 10000000 - LIT
+  196  - 00010000 - <value 65536>
+  197  - 23000000 - DIV
+  198  - 4200006E - CALL 110
+  199  - 30000000 - LOAD
+  200  - 29000000 - INVERT
+  201  - 10000000 - LIT
+  202  - 00000001 - <value 1>
+  203  - 20000000 - ADD
+  204  - 20000000 - ADD
+  205  - 42000053 - CALL 83
+  206  - 30000000 - LOAD
+  207  - 4200005C - CALL 92
+  208  - 30000000 - LOAD
+  209  - 22000000 - MUL
+  210  - 20000000 - ADD
+  211  - 42000053 - CALL 83
+  212  - 31000000 - STORE
+  213  - 4200006B - CALL 107
+  214  - 30000000 - LOAD
+  215  - 42000050 - CALL 80
+  216  - 31000000 - STORE
+  217  - 43000000 - RET
+  218  - 10000000 - LIT
+  219  - 00000326 - <value 806>
+  220  - 43000000 - RET
+  221  - 10000000 - LIT
+  222  - 00000327 - <value 807>
+  223  - 43000000 - RET
+  224  - 10000000 - LIT
+  225  - 00000328 - <value 808>
+  226  - 43000000 - RET
+  227  - 10000000 - LIT
+  228  - 00000329 - <value 809>
+  229  - 43000000 - RET
+  230  - 10000000 - LIT
+  231  - 0000032A - <value 810>
+  232  - 43000000 - RET
+  233  - 10000000 - LIT
+  234  - 0000032B - <value 811>
+  235  - 43000000 - RET
+  236  - 10000000 - LIT
+  237  - 0000032C - <value 812>
+  238  - 43000000 - RET
+  239  - 10000000 - LIT
+  240  - 0000032D - <value 813>
+  241  - 43000000 - RET
+  242  - 10000000 - LIT
+  243  - 0000032E - <value 814>
+  244  - 43000000 - RET
+  245  - 10000000 - LIT
+  246  - 0000032F - <value 815>
+  247  - 43000000 - RET
+  248  - 10000000 - LIT
+  249  - 00000330 - <value 816>
+  250  - 43000000 - RET
+  251  - 10000000 - LIT
+  252  - 00000331 - <value 817>
+  253  - 43000000 - RET
+  254  - 10000000 - LIT
+  255  - 00000332 - <value 818>
+  256  - 43000000 - RET
+  257  - 10000000 - LIT
+  258  - 00000333 - <value 819>
+  259  - 43000000 - RET
+  260  - 10000000 - LIT
+  261  - 00000334 - <value 820>
+  262  - 43000000 - RET
+  263  - 10000000 - LIT
+  264  - 00000335 - <value 821>
+  265  - 43000000 - RET
+  266  - 10000000 - LIT
+  267  - 00000336 - <value 822>
+  268  - 43000000 - RET
+  269  - 10000000 - LIT
+  270  - 00000337 - <value 823>
+  271  - 43000000 - RET
+  272  - 10000000 - LIT
+  273  - 00000338 - <value 824>
+  274  - 43000000 - RET
+  275  - 10000000 - LIT
+  276  - 00000339 - <value 825>
+  277  - 43000000 - RET
+  278  - 10000000 - LIT
+  279  - 0000033A - <value 826>
+  280  - 43000000 - RET
+  281  - 10000000 - LIT
+  282  - 0000033B - <value 827>
+  283  - 43000000 - RET
+  284  - 10000000 - LIT
+  285  - 0000033C - <value 828>
+  286  - 43000000 - RET
+  287  - 10000000 - LIT
+  288  - 0000033D - <value 829>
+  289  - 43000000 - RET
+  290  - 10000000 - LIT
+  291  - 0000033E - <value 830>
+  292  - 43000000 - RET
+  293  - 10000000 - LIT
+  294  - 0000033F - <value 831>
+  295  - 43000000 - RET
+  296  - 10000000 - LIT
+  297  - 00000340 - <value 832>
+  298  - 43000000 - RET
+  299  - 10000000 - LIT
+  300  - 00000341 - <value 833>
+  301  - 43000000 - RET
+  302  - 10000000 - LIT
+  303  - 00000342 - <value 834>
+  304  - 43000000 - RET
+  305  - 10000000 - LIT
+  306  - 00000343 - <value 835>
+  307  - 43000000 - RET
+  308  - 10000000 - LIT
+  309  - 00000344 - <value 836>
+  310  - 43000000 - RET
+  311  - 10000000 - LIT
+  312  - 00000345 - <value 837>
+  313  - 43000000 - RET
+  314  - 10000000 - LIT
+  315  - 00000346 - <value 838>
+  316  - 43000000 - RET
+  317  - 10000000 - LIT
+  318  - 00000347 - <value 839>
+  319  - 43000000 - RET
+  320  - 10000000 - LIT
+  321  - 00000348 - <value 840>
+  322  - 43000000 - RET
+  323  - 10000000 - LIT
+  324  - 00000349 - <value 841>
+  325  - 43000000 - RET
+  326  - 10000000 - LIT
+  327  - 0000034A - <value 842>
+  328  - 43000000 - RET
+  329  - 10000000 - LIT
+  330  - 0000034B - <value 843>
+  331  - 43000000 - RET
+  332  - 10000000 - LIT
+  333  - 00000001 - <value 1>
+  334  - 420000DA - CALL 218
+  335  - 31000000 - STORE
+  336  - 10000000 - LIT
+  337  - 00000000 - <value 0>
+  338  - 42000113 - CALL 275
+  339  - 31000000 - STORE
+  340  - 10000000 - LIT
+  341  - 0000000A - <value 10>
+  342  - 420000DD - CALL 221
+  343  - 31000000 - STORE
+  344  - 10000000 - LIT
+  345  - 00000000 - <value 0>
+  346  - 42000116 - CALL 278
+  347  - 31000000 - STORE
+  348  - 10000000 - LIT
+  349  - 00000064 - <value 100>
+  350  - 420000E0 - CALL 224
+  351  - 31000000 - STORE
+  352  - 10000000 - LIT
+  353  - 00000000 - <value 0>
+  354  - 42000119 - CALL 281
+  355  - 31000000 - STORE
+  356  - 10000000 - LIT
+  357  - 000003E8 - <value 1000>
+  358  - 420000E3 - CALL 227
+  359  - 31000000 - STORE
+  360  - 10000000 - LIT
+  361  - 00000000 - <value 0>
+  362  - 4200011C - CALL 284
+  363  - 31000000 - STORE
+  364  - 10000000 - LIT
+  365  - 00002710 - <value 10000>
+  366  - 420000E6 - CALL 230
+  367  - 31000000 - STORE
+  368  - 10000000 - LIT
+  369  - 00000000 - <value 0>
+  370  - 4200011F - CALL 287
+  371  - 31000000 - STORE
+  372  - 10000000 - LIT
+  373  - 000186A0 - <value 100000>
+  374  - 420000E9 - CALL 233
+  375  - 31000000 - STORE
+  376  - 10000000 - LIT
+  377  - 00000000 - <value 0>
+  378  - 42000122 - CALL 290
+  379  - 31000000 - STORE
+  380  - 10000000 - LIT
+  381  - 000F4240 - <value 1000000>
+  382  - 420000EC - CALL 236
+  383  - 31000000 - STORE
+  384  - 10000000 - LIT
+  385  - 00000000 - <value 0>
+  386  - 42000125 - CALL 293
+  387  - 31000000 - STORE
+  388  - 10000000 - LIT
+  389  - 00989680 - <value 10000000>
+  390  - 420000EF - CALL 239
+  391  - 31000000 - STORE
+  392  - 10000000 - LIT
+  393  - 00000000 - <value 0>
+  394  - 42000128 - CALL 296
+  395  - 31000000 - STORE
+  396  - 10000000 - LIT
+  397  - 05F5E100 - <value 100000000>
+  398  - 420000F2 - CALL 242
+  399  - 31000000 - STORE
+  400  - 10000000 - LIT
+  401  - 00000000 - <value 0>
+  402  - 4200012B - CALL 299
+  403  - 31000000 - STORE
+  404  - 10000000 - LIT
+  405  - 3B9ACA00 - <value 1000000000>
+  406  - 420000F5 - CALL 245
+  407  - 31000000 - STORE
+  408  - 10000000 - LIT
+  409  - 00000000 - <value 0>
+  410  - 4200012E - CALL 302
+  411  - 31000000 - STORE
+  412  - 10000000 - LIT
+  413  - 540BE400 - <value 1410065408>
+  414  - 420000F8 - CALL 248
+  415  - 31000000 - STORE
+  416  - 10000000 - LIT
+  417  - 00000002 - <value 2>
+  418  - 42000131 - CALL 305
+  419  - 31000000 - STORE
+  420  - 10000000 - LIT
+  421  - 4876E800 - <value 1215752192>
+  422  - 420000FB - CALL 251
+  423  - 31000000 - STORE
+  424  - 10000000 - LIT
+  425  - 00000017 - <value 23>
+  426  - 42000134 - CALL 308
+  427  - 31000000 - STORE
+  428  - 10000000 - LIT
+  429  - D4A51000 - <value -727379968>
+  430  - 420000FE - CALL 254
+  431  - 31000000 - STORE
+  432  - 10000000 - LIT
+  433  - 000000E8 - <value 232>
+  434  - 42000137 - CALL 311
+  435  - 31000000 - STORE
+  436  - 10000000 - LIT
+  437  - 4E72A000 - <value 1316134912>
+  438  - 42000101 - CALL 257
+  439  - 31000000 - STORE
+  440  - 10000000 - LIT
+  441  - 00000918 - <value 2328>
+  442  - 4200013A - CALL 314
+  443  - 31000000 - STORE
+  444  - 10000000 - LIT
+  445  - 107A4000 - <value 276447232>
+  446  - 42000104 - CALL 260
+  447  - 31000000 - STORE
+  448  - 10000000 - LIT
+  449  - 00005AF3 - <value 23283>
+  450  - 4200013D - CALL 317
+  451  - 31000000 - STORE
+  452  - 10000000 - LIT
+  453  - A4C68000 - <value -1530494976>
+  454  - 42000107 - CALL 263
+  455  - 31000000 - STORE
+  456  - 10000000 - LIT
+  457  - 00038D7E - <value 232830>
+  458  - 42000140 - CALL 320
+  459  - 31000000 - STORE
+  460  - 10000000 - LIT
+  461  - 6FC10000 - <value 1874919424>
+  462  - 4200010A - CALL 266
+  463  - 31000000 - STORE
+  464  - 10000000 - LIT
+  465  - 002386F2 - <value 2328306>
+  466  - 42000143 - CALL 323
+  467  - 31000000 - STORE
+  468  - 10000000 - LIT
+  469  - 5D8A0000 - <value 1569325056>
+  470  - 4200010D - CALL 269
+  471  - 31000000 - STORE
+  472  - 10000000 - LIT
+  473  - 01634578 - <value 23283064>
+  474  - 42000146 - CALL 326
+  475  - 31000000 - STORE
+  476  - 10000000 - LIT
+  477  - A7640000 - <value -1486618624>
+  478  - 42000110 - CALL 272
+  479  - 31000000 - STORE
+  480  - 10000000 - LIT
+  481  - 0DE0B6B3 - <value 232830643>
+  482  - 42000149 - CALL 329
+  483  - 31000000 - STORE
+  484  - 43000000 - RET
+  485  - 10000000 - LIT
+  486  - 0000034C - <value 844>
+  487  - 43000000 - RET
+  488  - 10000000 - LIT
+  489  - 0000034D - <value 845>
+  490  - 43000000 - RET
+  491  - 42000053 - CALL 83
+  492  - 30000000 - LOAD
+  493  - 420001E8 - CALL 488
+  494  - 30000000 - LOAD
+  495  - 25000000 - EQ
+  496  - 410001F7 - JZ 503
+  497  - 42000050 - CALL 80
+  498  - 30000000 - LOAD
+  499  - 420001E5 - CALL 485
+  500  - 30000000 - LOAD
+  501  - 42000071 - CALL 113
+  502  - 400001FC - JMP 508
+  503  - 42000053 - CALL 83
+  504  - 30000000 - LOAD
+  505  - 420001E8 - CALL 488
+  506  - 30000000 - LOAD
+  507  - 2A000000 - GT
+  508  - 43000000 - RET
+  509  - 42000050 - CALL 80
+  510  - 30000000 - LOAD
+  511  - 420001E5 - CALL 485
+  512  - 30000000 - LOAD
+  513  - 42000071 - CALL 113
+  514  - 29000000 - INVERT
+  515  - 50000000 - >R
+  516  - 42000050 - CALL 80
+  517  - 30000000 - LOAD
+  518  - 420001E5 - CALL 485
+  519  - 30000000 - LOAD
+  520  - 21000000 - SUB
+  521  - 42000053 - CALL 83
+  522  - 30000000 - LOAD
+  523  - 420001E8 - CALL 488
+  524  - 30000000 - LOAD
+  525  - 21000000 - SUB
+  526  - 51000000 - R>
+  527  - 29000000 - INVERT
+  528  - 10000000 - LIT
+  529  - 00000001 - <value 1>
+  530  - 20000000 - ADD
+  531  - 21000000 - SUB
+  532  - 42000053 - CALL 83
+  533  - 31000000 - STORE
+  534  - 42000050 - CALL 80
+  535  - 31000000 - STORE
+  536  - 43000000 - RET
+  537  - 10000000 - LIT
+  538  - 00000000 - <value 0>
+  539  - 420001EB - CALL 491
+  540  - 41000222 - JZ 546
+  541  - 420001FD - CALL 509
+  542  - 10000000 - LIT
+  543  - 00000001 - <value 1>
+  544  - 20000000 - ADD
+  545  - 4000021B - JMP 539
+  546  - 11000000 - DUP
+  547  - 10000000 - LIT
+  548  - 00000000 - <value 0>
+  549  - 25000000 - EQ
+  550  - 42000059 - CALL 89
+  551  - 30000000 - LOAD
+  552  - 27000000 - AND
+  553  - 4100022C - JZ 556
+  554  - 12000000 - DROP
+  555  - 40000236 - JMP 566
+  556  - 10000000 - LIT
+  557  - 00000000 - <value 0>
+  558  - 42000059 - CALL 89
+  559  - 31000000 - STORE
+  560  - 10000000 - LIT
+  561  - 00000030 - <value 48>
+  562  - 20000000 - ADD
+  563  - 10000000 - LIT
+  564  - FFFFFFF2 - <value -14>
+  565  - 31000000 - STORE
+  566  - 43000000 - RET
+  567  - 10000000 - LIT
+  568  - 00000001 - <value 1>
+  569  - 42000059 - CALL 89
+  570  - 31000000 - STORE
+  571  - 42000110 - CALL 272
+  572  - 30000000 - LOAD
+  573  - 420001E5 - CALL 485
+  574  - 31000000 - STORE
+  575  - 42000149 - CALL 329
+  576  - 30000000 - LOAD
+  577  - 420001E8 - CALL 488
+  578  - 31000000 - STORE
+  579  - 42000219 - CALL 537
+  580  - 4200010D - CALL 269
+  581  - 30000000 - LOAD
+  582  - 420001E5 - CALL 485
+  583  - 31000000 - STORE
+  584  - 42000146 - CALL 326
+  585  - 30000000 - LOAD
+  586  - 420001E8 - CALL 488
+  587  - 31000000 - STORE
+  588  - 42000219 - CALL 537
+  589  - 4200010A - CALL 266
+  590  - 30000000 - LOAD
+  591  - 420001E5 - CALL 485
+  592  - 31000000 - STORE
+  593  - 42000143 - CALL 323
+  594  - 30000000 - LOAD
+  595  - 420001E8 - CALL 488
+  596  - 31000000 - STORE
+  597  - 42000219 - CALL 537
+  598  - 42000107 - CALL 263
+  599  - 30000000 - LOAD
+  600  - 420001E5 - CALL 485
+  601  - 31000000 - STORE
+  602  - 42000140 - CALL 320
+  603  - 30000000 - LOAD
+  604  - 420001E8 - CALL 488
+  605  - 31000000 - STORE
+  606  - 42000219 - CALL 537
+  607  - 42000104 - CALL 260
+  608  - 30000000 - LOAD
+  609  - 420001E5 - CALL 485
+  610  - 31000000 - STORE
+  611  - 4200013D - CALL 317
+  612  - 30000000 - LOAD
+  613  - 420001E8 - CALL 488
+  614  - 31000000 - STORE
+  615  - 42000219 - CALL 537
+  616  - 42000101 - CALL 257
+  617  - 30000000 - LOAD
+  618  - 420001E5 - CALL 485
+  619  - 31000000 - STORE
+  620  - 4200013A - CALL 314
+  621  - 30000000 - LOAD
+  622  - 420001E8 - CALL 488
+  623  - 31000000 - STORE
+  624  - 42000219 - CALL 537
+  625  - 420000FE - CALL 254
+  626  - 30000000 - LOAD
+  627  - 420001E5 - CALL 485
+  628  - 31000000 - STORE
+  629  - 42000137 - CALL 311
+  630  - 30000000 - LOAD
+  631  - 420001E8 - CALL 488
+  632  - 31000000 - STORE
+  633  - 42000219 - CALL 537
+  634  - 420000FB - CALL 251
+  635  - 30000000 - LOAD
+  636  - 420001E5 - CALL 485
+  637  - 31000000 - STORE
+  638  - 42000134 - CALL 308
+  639  - 30000000 - LOAD
+  640  - 420001E8 - CALL 488
+  641  - 31000000 - STORE
+  642  - 42000219 - CALL 537
+  643  - 420000F8 - CALL 248
+  644  - 30000000 - LOAD
+  645  - 420001E5 - CALL 485
+  646  - 31000000 - STORE
+  647  - 42000131 - CALL 305
+  648  - 30000000 - LOAD
+  649  - 420001E8 - CALL 488
+  650  - 31000000 - STORE
+  651  - 42000219 - CALL 537
+  652  - 420000F5 - CALL 245
+  653  - 30000000 - LOAD
+  654  - 420001E5 - CALL 485
+  655  - 31000000 - STORE
+  656  - 4200012E - CALL 302
+  657  - 30000000 - LOAD
+  658  - 420001E8 - CALL 488
+  659  - 31000000 - STORE
+  660  - 42000219 - CALL 537
+  661  - 420000F2 - CALL 242
+  662  - 30000000 - LOAD
+  663  - 420001E5 - CALL 485
+  664  - 31000000 - STORE
+  665  - 4200012B - CALL 299
+  666  - 30000000 - LOAD
+  667  - 420001E8 - CALL 488
+  668  - 31000000 - STORE
+  669  - 42000219 - CALL 537
+  670  - 420000EF - CALL 239
+  671  - 30000000 - LOAD
+  672  - 420001E5 - CALL 485
+  673  - 31000000 - STORE
+  674  - 42000128 - CALL 296
+  675  - 30000000 - LOAD
+  676  - 420001E8 - CALL 488
+  677  - 31000000 - STORE
+  678  - 42000219 - CALL 537
+  679  - 420000EC - CALL 236
+  680  - 30000000 - LOAD
+  681  - 420001E5 - CALL 485
+  682  - 31000000 - STORE
+  683  - 42000125 - CALL 293
+  684  - 30000000 - LOAD
+  685  - 420001E8 - CALL 488
+  686  - 31000000 - STORE
+  687  - 42000219 - CALL 537
+  688  - 420000E9 - CALL 233
+  689  - 30000000 - LOAD
+  690  - 420001E5 - CALL 485
+  691  - 31000000 - STORE
+  692  - 42000122 - CALL 290
+  693  - 30000000 - LOAD
+  694  - 420001E8 - CALL 488
+  695  - 31000000 - STORE
+  696  - 42000219 - CALL 537
+  697  - 420000E6 - CALL 230
+  698  - 30000000 - LOAD
+  699  - 420001E5 - CALL 485
+  700  - 31000000 - STORE
+  701  - 4200011F - CALL 287
+  702  - 30000000 - LOAD
+  703  - 420001E8 - CALL 488
+  704  - 31000000 - STORE
+  705  - 42000219 - CALL 537
+  706  - 420000E3 - CALL 227
+  707  - 30000000 - LOAD
+  708  - 420001E5 - CALL 485
+  709  - 31000000 - STORE
+  710  - 4200011C - CALL 284
+  711  - 30000000 - LOAD
+  712  - 420001E8 - CALL 488
+  713  - 31000000 - STORE
+  714  - 42000219 - CALL 537
+  715  - 420000E0 - CALL 224
+  716  - 30000000 - LOAD
+  717  - 420001E5 - CALL 485
+  718  - 31000000 - STORE
+  719  - 42000119 - CALL 281
+  720  - 30000000 - LOAD
+  721  - 420001E8 - CALL 488
+  722  - 31000000 - STORE
+  723  - 42000219 - CALL 537
+  724  - 420000DD - CALL 221
+  725  - 30000000 - LOAD
+  726  - 420001E5 - CALL 485
+  727  - 31000000 - STORE
+  728  - 42000116 - CALL 278
+  729  - 30000000 - LOAD
+  730  - 420001E8 - CALL 488
+  731  - 31000000 - STORE
+  732  - 42000219 - CALL 537
+  733  - 10000000 - LIT
+  734  - 00000000 - <value 0>
+  735  - 420000DA - CALL 218
+  736  - 30000000 - LOAD
+  737  - 420001E5 - CALL 485
+  738  - 31000000 - STORE
+  739  - 42000113 - CALL 275
+  740  - 30000000 - LOAD
+  741  - 420001E8 - CALL 488
+  742  - 31000000 - STORE
+  743  - 420001EB - CALL 491
+  744  - 410002EE - JZ 750
+  745  - 420001FD - CALL 509
+  746  - 10000000 - LIT
+  747  - 00000001 - <value 1>
+  748  - 20000000 - ADD
+  749  - 400002E7 - JMP 743
+  750  - 10000000 - LIT
+  751  - 00000030 - <value 48>
+  752  - 20000000 - ADD
+  753  - 10000000 - LIT
+  754  - FFFFFFF2 - <value -14>
+  755  - 31000000 - STORE
+  756  - 43000000 - RET
+  757  - 4200014C - CALL 332
+  758  - 10000000 - LIT
+  759  - 00000001 - <value 1>
+  760  - 42000050 - CALL 80
+  761  - 31000000 - STORE
+  762  - 10000000 - LIT
+  763  - 00000000 - <value 0>
+  764  - 42000053 - CALL 83
+  765  - 31000000 - STORE
+  766  - 10000000 - LIT
+  767  - 00000002 - <value 2>
+  768  - 42000056 - CALL 86
+  769  - 31000000 - STORE
+  770  - 42000056 - CALL 86
+  771  - 30000000 - LOAD
+  772  - 10000000 - LIT
+  773  - 00000014 - <value 20>
+  774  - 2A000000 - GT
+  775  - 29000000 - INVERT
+  776  - 41000314 - JZ 788
+  777  - 42000056 - CALL 86
+  778  - 30000000 - LOAD
+  779  - 42000083 - CALL 131
+  780  - 42000056 - CALL 86
+  781  - 30000000 - LOAD
+  782  - 10000000 - LIT
+  783  - 00000001 - <value 1>
+  784  - 20000000 - ADD
+  785  - 42000056 - CALL 86
+  786  - 31000000 - STORE
+  787  - 40000302 - JMP 770
+  788  - 42000237 - CALL 567
+  789  - 10000000 - LIT
+  790  - 0000000A - <value 10>
+  791  - 10000000 - LIT
+  792  - FFFFFFF2 - <value -14>
+  793  - 31000000 - STORE
+  794  - 01000000 - HALT
+  795  - 00000000 - NOP
+  796  - 00000000 - NOP
+  797  - 00000000 - NOP
+  798  - 00000000 - NOP
+  799  - 00000000 - NOP
+  800  - 00000000 - NOP
+  801  - 00000000 - NOP
+  802  - 00000000 - NOP
+  803  - 00000000 - NOP
+  804  - 00000000 - NOP
+  805  - 00000000 - NOP
+  806  - 00000000 - NOP
+  807  - 00000000 - NOP
+  808  - 00000000 - NOP
+  809  - 00000000 - NOP
+  810  - 00000000 - NOP
+  811  - 00000000 - NOP
+  812  - 00000000 - NOP
+  813  - 00000000 - NOP
+  814  - 00000000 - NOP
+  815  - 00000000 - NOP
+  816  - 00000000 - NOP
+  817  - 00000000 - NOP
+  818  - 00000000 - NOP
+  819  - 00000000 - NOP
+  820  - 00000000 - NOP
+  821  - 00000000 - NOP
+  822  - 00000000 - NOP
+  823  - 00000000 - NOP
+  824  - 00000000 - NOP
+  825  - 00000000 - NOP
+  826  - 00000000 - NOP
+  827  - 00000000 - NOP
+  828  - 00000000 - NOP
+  829  - 00000000 - NOP
+  830  - 00000000 - NOP
+  831  - 00000000 - NOP
+  832  - 00000000 - NOP
+  833  - 00000000 - NOP
+  834  - 00000000 - NOP
+  835  - 00000000 - NOP
+  836  - 00000000 - NOP
+  837  - 00000000 - NOP
+  838  - 00000000 - NOP
+  839  - 00000000 - NOP
+  840  - 00000000 - NOP
+  841  - 00000000 - NOP
+  842  - 00000000 - NOP
+  843  - 00000000 - NOP
+  844  - 00000000 - NOP
+  845  - 00000000 - NOP
+out_log: |-
+  DEBUG   machine:simulation    TICK:   0 PC:   0 mPC: 0 TOS:         0 NOS:         0  JMP
+  DEBUG   cache:request       cache READ  addr=0x00000000 → MISS line=0 (stall 9)
+  DEBUG   machine:simulation    TICK:   1 PC:   1 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   2 PC:   1 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   3 PC:   1 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   4 PC:   1 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   5 PC:   1 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   6 PC:   1 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   7 PC:   1 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   8 PC:   1 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   9 PC:   1 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  10 PC:   1 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  11 PC:   1 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  12 PC:   1 mPC:27 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  13 PC: 757 mPC: 0 TOS:         0 NOS:         0  CALL
+  DEBUG   cache:request       cache READ  addr=0x000002F5 → MISS line=1 (stall 9)
+  DEBUG   machine:simulation    TICK:  14 PC: 758 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  15 PC: 758 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  16 PC: 758 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  17 PC: 758 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  18 PC: 758 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  19 PC: 758 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  20 PC: 758 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  21 PC: 758 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  22 PC: 758 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  23 PC: 758 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  24 PC: 758 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  25 PC: 758 mPC:29 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  26 PC: 332 mPC: 0 TOS:         0 NOS:         0  LIT
+  DEBUG   cache:request       cache READ  addr=0x0000014C → MISS line=3 (stall 9)
+  DEBUG   machine:simulation    TICK:  27 PC: 333 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  28 PC: 333 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  29 PC: 333 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  30 PC: 333 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  31 PC: 333 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  32 PC: 333 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  33 PC: 333 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  34 PC: 333 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  35 PC: 333 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  36 PC: 333 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  37 PC: 333 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  38 PC: 333 mPC: 4 TOS:         0 NOS:         0  
+  DEBUG   cache:request       cache READ  addr=0x0000014D → HIT  line=3
+  DEBUG   machine:simulation    TICK:  39 PC: 334 mPC: 5 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  40 PC: 334 mPC: 0 TOS:         1 NOS:         0  CALL
+  DEBUG   cache:request       cache READ  addr=0x0000014E → HIT  line=3
+  DEBUG   machine:simulation    TICK:  41 PC: 335 mPC: 1 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  42 PC: 335 mPC:29 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  43 PC: 218 mPC: 0 TOS:         1 NOS:         0  LIT
+  DEBUG   cache:request       cache READ  addr=0x000000DA → MISS line=2 (stall 9)
+  DEBUG   machine:simulation    TICK:  44 PC: 219 mPC: 1 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  45 PC: 219 mPC: 1 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  46 PC: 219 mPC: 1 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  47 PC: 219 mPC: 1 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  48 PC: 219 mPC: 1 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  49 PC: 219 mPC: 1 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  50 PC: 219 mPC: 1 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  51 PC: 219 mPC: 1 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  52 PC: 219 mPC: 1 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  53 PC: 219 mPC: 1 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  54 PC: 219 mPC: 1 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  55 PC: 219 mPC: 4 TOS:         1 NOS:         0  
+  DEBUG   cache:request       cache READ  addr=0x000000DB → HIT  line=2
+  DEBUG   machine:simulation    TICK:  56 PC: 220 mPC: 5 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  57 PC: 220 mPC: 0 TOS:       806 NOS:         1  RET
+  DEBUG   cache:request       cache READ  addr=0x000000DC → MISS line=3 (stall 9)
+  DEBUG   machine:simulation    TICK:  58 PC: 221 mPC: 1 TOS:       806 NOS:         1  
+  DEBUG   machine:simulation    TICK:  59 PC: 221 mPC: 1 TOS:       806 NOS:         1  
+  DEBUG   machine:simulation    TICK:  60 PC: 221 mPC: 1 TOS:       806 NOS:         1  
+  DEBUG   machine:simulation    TICK:  61 PC: 221 mPC: 1 TOS:       806 NOS:         1  
+  DEBUG   machine:simulation    TICK:  62 PC: 221 mPC: 1 TOS:       806 NOS:         1  
+  DEBUG   machine:simulation    TICK:  63 PC: 221 mPC: 1 TOS:       806 NOS:         1  
+  DEBUG   machine:simulation    TICK:  64 PC: 221 mPC: 1 TOS:       806 NOS:         1  
+  DEBUG   machine:simulation    TICK:  65 PC: 221 mPC: 1 TOS:       806 NOS:         1  
+  DEBUG   machine:simulation    TICK:  66 PC: 221 mPC: 1 TOS:       806 NOS:         1  
+  DEBUG   machine:simulation    TICK:  67 PC: 221 mPC: 1 TOS:       806 NOS:         1  
+  DEBUG   machine:simulation    TICK:  68 PC: 221 mPC: 1 TOS:       806 NOS:         1  
+  DEBUG   machine:simulation    TICK:  69 PC: 221 mPC:30 TOS:       806 NOS:         1  
+  DEBUG   machine:simulation    TICK:  70 PC: 335 mPC: 0 TOS:       806 NOS:         1  STORE
+  DEBUG   cache:request       cache READ  addr=0x0000014F → MISS line=3 (stall 9)
+  ... <106781 log records skipped> ...
+  DEBUG   machine:simulation    TICK:94100 PC: 790 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:94101 PC: 790 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:94102 PC: 790 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:94103 PC: 790 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:94104 PC: 790 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:94105 PC: 790 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:94106 PC: 790 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:94107 PC: 790 mPC: 4 TOS:         0 NOS:         0  
+  DEBUG   cache:request       cache READ  addr=0x00000316 → HIT  line=1
+  DEBUG   machine:simulation    TICK:94108 PC: 791 mPC: 5 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:94109 PC: 791 mPC: 0 TOS:        10 NOS:         0  LIT
+  DEBUG   cache:request       cache READ  addr=0x00000317 → HIT  line=1
+  DEBUG   machine:simulation    TICK:94110 PC: 792 mPC: 1 TOS:        10 NOS:         0  
+  DEBUG   machine:simulation    TICK:94111 PC: 792 mPC: 4 TOS:        10 NOS:         0  
+  DEBUG   cache:request       cache READ  addr=0x00000318 → MISS line=2 (stall 9)
+  DEBUG   machine:simulation    TICK:94112 PC: 793 mPC: 5 TOS:        10 NOS:         0  
+  DEBUG   machine:simulation    TICK:94113 PC: 793 mPC: 5 TOS:        10 NOS:         0  
+  DEBUG   machine:simulation    TICK:94114 PC: 793 mPC: 5 TOS:        10 NOS:         0  
+  DEBUG   machine:simulation    TICK:94115 PC: 793 mPC: 5 TOS:        10 NOS:         0  
+  DEBUG   machine:simulation    TICK:94116 PC: 793 mPC: 5 TOS:        10 NOS:         0  
+  DEBUG   machine:simulation    TICK:94117 PC: 793 mPC: 5 TOS:        10 NOS:         0  
+  DEBUG   machine:simulation    TICK:94118 PC: 793 mPC: 5 TOS:        10 NOS:         0  
+  DEBUG   machine:simulation    TICK:94119 PC: 793 mPC: 5 TOS:        10 NOS:         0  
+  DEBUG   machine:simulation    TICK:94120 PC: 793 mPC: 5 TOS:        10 NOS:         0  
+  DEBUG   machine:simulation    TICK:94121 PC: 793 mPC: 5 TOS:        10 NOS:         0  
+  DEBUG   machine:simulation    TICK:94122 PC: 793 mPC: 5 TOS:        10 NOS:         0  
+  DEBUG   machine:simulation    TICK:94123 PC: 793 mPC: 0 TOS:       -14 NOS:        10  STORE
+  DEBUG   cache:request       cache READ  addr=0x00000319 → HIT  line=2
+  DEBUG   machine:simulation    TICK:94124 PC: 794 mPC: 1 TOS:       -14 NOS:        10  
+  DEBUG   machine:simulation    TICK:94125 PC: 794 mPC:25 TOS:       -14 NOS:        10  
+  DEBUG   machine:simulation    TICK:94126 PC: 794 mPC:26 TOS:        10 NOS:         0  
+  DEBUG   machine:write         output: 10 (0x0A)
+  DEBUG   machine:simulation    TICK:94127 PC: 794 mPC:26 TOS:        10 NOS:         0  
+  DEBUG   machine:simulation    TICK:94128 PC: 794 mPC: 0 TOS:         0 NOS:         0  HALT
+  DEBUG   cache:request       cache READ  addr=0x0000031A → HIT  line=2
+  DEBUG   machine:simulation    TICK:94129 PC: 795 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:94130 PC: 795 mPC: 3 TOS:         0 NOS:         0  
+  INFO    machine:simulation    output: [50, 52, 51, 50, 57, 48, 50, 48, 48, 56, 49, 55, 54, 54, 52, 48, 48, 48, 48, 10]
+  INFO    machine:simulation    ticks: 94131
+  INFO    machine:simulation    cache: hits=6831 misses=5916 writebacks=386
+out_stdout: |
+  2432902008176640000

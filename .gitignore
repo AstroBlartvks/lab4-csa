@@ -1,0 +1,23 @@
+# Артефакты транслятора
+*.bin
+*.bin.hex
+
+# Python
+__pycache__/
+*.pyc
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Виртуальное окружение
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+.claude
+
+brainfuck-master
+

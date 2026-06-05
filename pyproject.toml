@@ -1,0 +1,76 @@
+[project]
+name = "forth-stack-vm"
+version = "0.1.0"
+description = "Forth stack machine with microcode and cache. Translator and model."
+requires-python = ">=3.11"
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "pytest-golden",
+    "ruff",
+    "mypy",
+    "ruamel.yaml",  # scripts/normalize_goldens.py
+]
+
+[tool.pytest.ini_options]
+enable_assertion_pass_hook = true
+addopts = "--doctest-modules --ignore=brainfuck-master"
+log_format = "%(levelname)-7s %(module)s:%(funcName)-13s %(message)s"
+testpaths = ["."]
+
+[tool.ruff]
+line-length = 120
+src = ["."]
+exclude = ["brainfuck-master", ".venv", "__pycache__"]
+
+[tool.ruff.lint]
+select = [
+    "F",
+    "E",
+    "W",
+    "N",
+    "I",
+    "C90",
+    "UP",
+    "ERA",
+    "YTT",
+    "ASYNC",
+    "A",
+    "COM",
+    "FA",
+    "ICN",
+    "INP",
+    "T20",
+    "PT",
+    "Q",
+    "RET",
+    "PTH",
+    "PD",
+    "TRY",
+    "RUF",
+]
+ignore = [
+    "COM812",
+    "E501",
+    "T201",
+    "RUF002",
+    "RUF003",
+    "PTH123",
+    "PTH118",
+    "UP032",
+    "PTH103",
+    "PTH120",
+    "PTH100",
+    "INP001",  # плоская структура
+]
+unfixable = [
+    "ERA001",
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 7
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
