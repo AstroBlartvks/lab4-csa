@@ -300,49 +300,7 @@ machine.py <code.bin> <input.txt> [--log]
 
 ### DataPath
 
-```text
-                LatchPc                          ┌─────────────────┐
-                  │                              │   MainMemory    │
-                  v                              │     +  MMIO     │
-             ┌─────────┐    addr                 └───────▲─────────┘
-             │   PC    │─────────┐                       │
-             └─────────┘         │                       │
-                  ▲              v                       │ done
-                  │       ┌────────────┐                 │ value
-                  │       │   Cache    │◀──── addr,op,data
-                  │       │ (direct-   │
-                  │       │  mapped,   │                 │
-                  │       │ write-back)│─────────────────┘
-                  │       └─────┬──────┘
-                  │             │ value
-                  │             v
-             ┌─────────┐  ┌─────────┐  ┌──────────┐
-             │   IR    │  │   MAR   │  │   MDR    │
-             └────┬────┘  └─────────┘  └────┬─────┘
-                  │ opcode/operand               │
-                  v                              v
-             ┌──────────┐               ┌────────────────┐
-             │  Decode  │               │  TOS  │  NOS   │◀── DStack SRAM (256)
-             │ opc→mPC  │               └───┬───┴───┬────┘
-             └────┬─────┘                   │       │
-                  │                         v       v
-                  v                       ┌───────────┐
-             ┌──────────┐                 │    ALU    │──► Z, N
-             │   mPC    │                 └─────┬─────┘
-             └────┬─────┘                       │
-                  │ addr                        v
-                  v                       ┌──────────┐
-             ┌──────────┐    signals      │ Mux в TOS│
-             │ mProgram │────────────────▶│ Mux в NOS│
-             │   ROM    │                 │ Mux в PC │
-             └──────────┘                 │ ...      │
-                                          └──────────┘
-                                               │
-                                               v
-                                          ┌──────────┐
-                                          │   TORS   │◀── RStack SRAM (256)
-                                          └──────────┘
-```
+![pics/Datapath.png](pics/Datapath.png)
 
 Реализован в классе `DataPath`. Методы класса соответствуют сигналам микрокода, каждый исполняется за один такт. Корректность последовательности сигналов — ответственность `ControlUnit`.
 
@@ -382,11 +340,15 @@ machine.py <code.bin> <input.txt> [--log]
 
 Отдельный модуль между ControlUnit и MainMemory, реализован в [cache.py](./cache.py).
 
+![pics/Cache.png](pics/Cache.png)
+
 **Параметры:**
 
 - **direct-mapped, write-back, write-allocate**;
 - **4 строки × 4 слова** (16 слов всего);
 - hit = 1 такт, miss = +9 тактов (10 всего), dirty eviction = ещё +9 (19 всего).
+
+
 
 **Разбиение адреса (32 бита):**
 
@@ -408,33 +370,7 @@ cache WRITE addr=0x00000300 → MISS line=0 evict=DIRTY wb=0x00000100 (stall 18)
 ```
 
 ### ControlUnit (микрокодированный)
-
-```text
-                            ┌──────────────(+1)──────────┐
-                            │                            │
-                            │    latch_mpc               │
-                            │                  │         │
-                            │   ┌─────┐        v         │
-                            └──►│     │     ┌─────┐      │
-                                │ MUX │────►│ mPC │──────┤
-                            ┌──►│     │     └─────┘      │
-                            │   └─────┘                  │
-                            │      ▲                     │
-                            │      │ sel_mpc             │
-                            │      │                     v
-                            │      │              ┌──────────┐
-                            │      │              │ mProgram │
-                            │      └──── opcode ──┤   ROM    │
-                            │                     └─────┬────┘
-                            │                           │
-                            │                           │ signals (list)
-                            │                           v
-                            │  flags  ┌──────────┐
-                            └─────────┤          │
-                                      │ DataPath │─── mem req ──► Cache
-                                      │          │
-                                      └──────────┘
-```
+![pics/ControlUnit.png](pics/ControlUnit.png)
 
 Реализован в классе `ControlUnit`.
 
