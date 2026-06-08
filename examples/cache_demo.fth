@@ -10,8 +10,8 @@ variable sum
 \ Fill arr[0..15] with 1..16
 0 i !
 begin i @ 16 < while
-  i @ 1 +        ( value = i+1 )
-  arr i @ +      ( addr = arr + i )
+  i @ 1 +              ( value = i+1 )
+  arr i @ cells +      ( addr = arr + i*4 )
   !
   i @ 1 + i !
 repeat
@@ -20,7 +20,7 @@ repeat
 0 sum !
 0 i !
 begin i @ 16 < while
-  arr i @ + @ sum @ + sum !
+  arr i @ cells + @ sum @ + sum !
   i @ 1 + i !
 repeat
 sum @ . cr
@@ -29,7 +29,7 @@ sum @ . cr
 0 sum !
 0 i !
 begin i @ 16 < while
-  arr i @ + @ sum @ + sum !
+  arr i @ cells + @ sum @ + sum !
   i @ 1 + i !
 repeat
 sum @ . cr

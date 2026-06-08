@@ -82,20 +82,24 @@ def _op(code: list[Instruction], op: Opcode, operand: int = 0) -> None:
     code.append({"opcode": op, "operand": operand})
 
 
+_BYTES_PER_WORD = 4
+
+
 def _wlen(code: list[Instruction]) -> int:
-    """Число 32-битных слов, занимаемых списком инструкций (LIT → 2 слова)."""
-    return sum(2 if i["opcode"] == Opcode.LIT else 1 for i in code)
+    """Размер списка инструкций в БАЙТАХ.
 
-
-def _wlen_up_to(code: list[Instruction], instr_idx: int) -> int:
-    """Word offset инструкции с индексом instr_idx в списке."""
-    return sum(2 if code[i]["opcode"] == Opcode.LIT else 1 for i in range(instr_idx))
+    Адресация байтовая: обычная инструкция = 4 байта (одно слово),
+    LIT = 8 байт (опкод-слово + слово-значение). Все адреса, которые
+    строятся через _wlen (цели JMP/JZ/CALL, базы секций, адреса данных),
+    автоматически получаются байтовыми.
+    """
+    return sum(8 if i["opcode"] == Opcode.LIT else 4 for i in code)
 
 
 def _build_print_cstr(offset: int) -> tuple[list[Instruction], int]:
     """Скомпилировать print_cstr ( addr -- ).
 
-    offset - абсолютный адрес (в словах) первой инструкции.
+    offset - абсолютный байтовый адрес первой инструкции.
     Возвращает (код, адрес_функции).
 
     Алгоритм: dup @ dup 0= if drop drop ret then emit addr+1 jmp loop.
@@ -109,7 +113,7 @@ def _build_print_cstr(offset: int) -> tuple[list[Instruction], int]:
     _op(code, Opcode.JZ, 0)
     _lit(code, _MMIO_OUT)
     _op(code, Opcode.STORE)
-    _lit(code, 1)
+    _lit(code, 4)  # шаг к следующему символу: 1 ячейка = 4 байта
     _op(code, Opcode.ADD)
     _op(code, Opcode.JMP, loop)
     exit_pc = offset + _wlen(code)
@@ -123,7 +127,7 @@ def _build_print_cstr(offset: int) -> tuple[list[Instruction], int]:
 def _build_print_num(offset: int) -> tuple[list[Instruction], int]:
     """Скомпилировать print_num ( n -- ).
 
-    offset - абсолютный адрес (в словах) первой инструкции.
+    offset - абсолютный байтовый адрес первой инструкции.
     Выводит десятичное представление знакового числа.
     """
     code: list[Instruction] = []
@@ -245,7 +249,7 @@ def _handle_string_token(
     for ch in text:
         data_section.append(ord(ch))
     data_section.append(0)
-    _lit(cur, data_base + str_offset)
+    _lit(cur, data_base + str_offset * _BYTES_PER_WORD)
     if is_dot:
         _op(cur, Opcode.CALL, addr_print_cstr)
 
@@ -325,7 +329,7 @@ def _handle_special(  # noqa: C901
         data_section.append(0)
         proc_addr = word_code_base + _wlen(word_code)
         word_dict[name] = proc_addr
-        _lit(word_code, data_base + var_offset)
+        _lit(word_code, data_base + var_offset * _BYTES_PER_WORD)
         _op(word_code, Opcode.RET)
         return idx, in_def, cur
 
@@ -405,6 +409,12 @@ _COMPOUND: dict[str, list[tuple[bool, Opcode | int]]] = {
     "<=": [(False, Opcode.GT), (False, Opcode.INVERT)],
     "2dup": [(False, Opcode.OVER), (False, Opcode.OVER)],
     "2drop": [(False, Opcode.DROP), (False, Opcode.DROP)],
+    # Байтовая адресация: 1 ячейка = 4 байта. cells/chars — масштаб индекса,
+    # cell+/char+ — переход к следующей ячейке.
+    "cells": [(True, 4), (False, Opcode.MUL)],
+    "chars": [(True, 4), (False, Opcode.MUL)],
+    "cell+": [(True, 4), (False, Opcode.ADD)],
+    "char+": [(True, 4), (False, Opcode.ADD)],
 }
 
 
@@ -549,7 +559,7 @@ def _layout(
     main_code: list[Instruction],
     data_section: list[int],
 ) -> list[Instruction]:
-    word_base = 1 + _wlen(runtime)
+    word_base = _BYTES_PER_WORD + _wlen(runtime)  # после ведущего JMP (1 слово = 4 байта)
     main_base = word_base + _wlen(word_code)
     _patch_cf(word_code, word_base)
     _patch_cf(main_code, main_base)
@@ -575,15 +585,15 @@ def translate(source: str) -> list[Instruction]:
     """
     tokens = tokenize(source)
 
-    rt_cstr, addr_cstr = _build_print_cstr(1)
-    rt_num, addr_num = _build_print_num(1 + _wlen(rt_cstr))
+    rt_cstr, addr_cstr = _build_print_cstr(_BYTES_PER_WORD)
+    rt_num, addr_num = _build_print_num(_BYTES_PER_WORD + _wlen(rt_cstr))
     runtime = rt_cstr + rt_num
     rt_wlen = _wlen(runtime)
-    word_code_base = 1 + rt_wlen
+    word_code_base = _BYTES_PER_WORD + rt_wlen  # после ведущего JMP
 
     wc1, mc1, _ = _compile_tokens(tokens, addr_cstr, addr_num, word_code_base, 0)
-    mc1_halt_extra = 0 if mc1 and mc1[-1].get("opcode") == Opcode.HALT else 1
-    data_base = 1 + rt_wlen + _wlen(wc1) + _wlen(mc1) + mc1_halt_extra
+    mc1_halt_extra = 0 if mc1 and mc1[-1].get("opcode") == Opcode.HALT else _BYTES_PER_WORD
+    data_base = _BYTES_PER_WORD + rt_wlen + _wlen(wc1) + _wlen(mc1) + mc1_halt_extra
 
     wc, mc, ds = _compile_tokens(tokens, addr_cstr, addr_num, word_code_base, data_base)
     return _layout(runtime, wc, mc, ds)

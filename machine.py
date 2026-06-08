@@ -152,9 +152,9 @@ class DataPath:
         return self.ir & 0x00FFFFFF
 
     def latch_pc(self, sel: PcSel) -> None:
-        """PC ← (sel)."""
+        """PC ← (sel). Адресация байтовая: следующее слово = PC+4."""
         if sel == PcSel.Next:
-            self.pc += 1
+            self.pc += 4
         elif sel == PcSel.Jmp:
             self.pc = self.ir_operand
         elif sel == PcSel.Jz:

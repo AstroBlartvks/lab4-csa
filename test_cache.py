@@ -1,4 +1,8 @@
-"""Тесты кеша: все 6 сценариев из задания."""
+"""Тесты кеша: все 6 сценариев из задания.
+
+Адресация байтовая: адреса кратны 4, слово n лежит по байтовому адресу n*4.
+Память заполнена так, что слово по адресу a содержит значение a >> 2.
+"""
 
 import pytest
 
@@ -13,10 +17,10 @@ def _run(cache: Cache) -> None:
 
 
 def make_cache() -> tuple[Cache, MainMemory]:
-    """Свежий кеш с памятью 256 слов, заполненной 0..255."""
+    """Свежий кеш с памятью 256 слов; слово по адресу a*4 содержит a."""
     ram = MainMemory(size=256)
     for i in range(256):
-        ram.write(i, i)
+        ram.write(i * 4, i)
     return Cache(ram), ram
 
 
@@ -42,10 +46,11 @@ def test_line_fill_first_miss_rest_hits() -> None:
     assert cache.response() == 0
     assert cache.stats.misses == 1
 
-    for addr in (1, 2, 3):
-        cache.request(addr, "read")
+    # Остальные 3 слова той же строки (байтовые адреса 4, 8, 12) — HIT.
+    for word_idx in (1, 2, 3):
+        cache.request(word_idx * 4, "read")
         _run(cache)
-        assert cache.response() == addr
+        assert cache.response() == word_idx
 
     assert cache.stats == CacheStats(hits=3, misses=1, writebacks=0)
 
@@ -57,7 +62,8 @@ def test_eviction_clean_no_writeback() -> None:
     _run(cache)
     assert cache.stats.misses == 1
 
-    cache.request(16, "read")
+    # Адрес 64 (слово 16) попадает в ту же строку, что и 0 — вытеснение.
+    cache.request(64, "read")
     _run(cache)
     assert cache.response() == 16
     assert cache.stats == CacheStats(hits=0, misses=2, writebacks=0)
@@ -70,7 +76,7 @@ def test_eviction_dirty_writeback() -> None:
     _run(cache)
     assert cache.stats == CacheStats(hits=0, misses=1, writebacks=0)
 
-    cache.request(16, "read")
+    cache.request(64, "read")
     _run(cache)
     assert cache.response() == 16
     assert cache.stats == CacheStats(hits=0, misses=2, writebacks=1)
@@ -81,18 +87,21 @@ def test_eviction_dirty_writeback() -> None:
 def test_write_allocate_on_miss() -> None:
     cache, ram = make_cache()
 
-    cache.request(4, "write", data=77)
+    # Запись по байту 16 (слово 4, строка index=1) — write-allocate (MISS).
+    cache.request(16, "write", data=77)
     _run(cache)
     assert cache.stats == CacheStats(hits=0, misses=1, writebacks=0)
 
-    cache.request(5, "read")
+    # Байт 20 (слово 5) — та же строка → HIT, значение слова 5.
+    cache.request(20, "read")
     _run(cache)
     assert cache.response() == 5
     assert cache.stats == CacheStats(hits=1, misses=1, writebacks=0)
 
-    cache.request(20, "read")
+    # Байт 80 (слово 20, та же строка index=1, другой tag) — вытеснение грязной.
+    cache.request(80, "read")
     _run(cache)
-    assert ram.read(4) == 77
+    assert ram.read(16) == 77
     assert cache.stats == CacheStats(hits=1, misses=2, writebacks=1)
 
 
@@ -144,7 +153,7 @@ def test_timing_dirty_eviction_ticks() -> None:
     cache.request(0, "write", data=1)
     _run(cache)
 
-    cache.request(16, "read")
+    cache.request(64, "read")
     ticks = 0
     while cache.is_busy():
         cache.tick()
@@ -168,10 +177,11 @@ def test_timing_hit_ticks() -> None:
     assert ticks == 0
 
 
-@pytest.mark.parametrize("addr", [0, 1, 2, 3, 7, 15])
-def test_split_roundtrip(addr: int) -> None:
+@pytest.mark.parametrize("byte_addr", [0, 4, 8, 12, 28, 60])
+def test_split_roundtrip(byte_addr: int) -> None:
     from cache import _split
 
-    tag, index, offset = _split(addr)
-    reconstructed = (tag << 4) | (index << 2) | offset
-    assert reconstructed == addr
+    tag, index, offset = _split(byte_addr)
+    # Реконструкция: собираем адрес слова, затем обратно в байтовый (<<2).
+    reconstructed = ((tag << 4) | (index << 2) | offset) << 2
+    assert reconstructed == byte_addr

@@ -6,7 +6,7 @@ variable len
 begin
   key dup 10 <>
 while
-  buf len @ + !
+  buf len @ cells + !
   len @ 1 + len !
 repeat
 drop
@@ -18,7 +18,7 @@ drop
 begin
   dup len @ <
 while
-  buf over + @ emit
+  buf over cells + @ emit
   1 +
 repeat
 drop

@@ -193,15 +193,18 @@ def from_bytes(binary: bytes) -> list[Instruction]:
 def to_hex(code: list[Instruction]) -> str:
     """Текстовый дамп кода в формате «<addr> - <HEXCODE> - <mnemonic>».
 
-    >>> lines = to_hex([{"opcode": Opcode.JMP, "operand": 5}, {"opcode": Opcode.LIT, "operand": 42}, {"opcode": Opcode.HALT, "operand": 0}])
+    Адресация байтовая: каждое 32-битное слово занимает 4 байта, поэтому
+    адреса идут 0, 4, 8, ... (LIT охватывает два слова = 8 байт).
+
+    >>> lines = to_hex([{"opcode": Opcode.JMP, "operand": 20}, {"opcode": Opcode.LIT, "operand": 42}, {"opcode": Opcode.HALT, "operand": 0}])
     >>> lines.split("\\n")[0]
-    '0  - 40000005 - JMP 5'
+    '0  - 40000014 - JMP 20'
     >>> lines.split("\\n")[1]
-    '1  - 10000000 - LIT'
+    '4  - 10000000 - LIT'
     >>> lines.split("\\n")[2]
-    '2  - 0000002A - <value 42>'
+    '8  - 0000002A - <value 42>'
     >>> lines.split("\\n")[3]
-    '3  - 01000000 - HALT'
+    '12  - 01000000 - HALT'
     """
     binary = to_bytes(code)
     n = len(binary) // 4
@@ -222,7 +225,7 @@ def to_hex(code: list[Instruction]) -> str:
         except ValueError:
             mnemonic = f"<unknown 0x{opcode_raw:02X}>"
         lines.append(f"{addr}  - {word:08X} - {mnemonic}")
-        addr += 1
+        addr += 4
         if opcode_raw == Opcode.LIT:
             i += 1
             if i < len(words):
@@ -230,6 +233,6 @@ def to_hex(code: list[Instruction]) -> str:
                 lines.append(
                     f"{addr}  - {val_word:08X} - <value {val_word if val_word < 0x80000000 else val_word - 0x100000000}>"
                 )
-                addr += 1
+                addr += 4
         i += 1
     return "\n".join(lines)

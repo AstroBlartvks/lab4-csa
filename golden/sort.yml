@@ -74,396 +74,396 @@ in_source: |-
   print_all
 in_stdin: '5 3 8 1 9 2 '
 out_code_hex: |-
-  0  - 400000E7 - JMP 231
-  1  - 11000000 - DUP
-  2  - 30000000 - LOAD
-  3  - 11000000 - DUP
-  4  - 4100000C - JZ 12
-  5  - 10000000 - LIT
-  6  - FFFFFFF2 - <value -14>
-  7  - 31000000 - STORE
-  8  - 10000000 - LIT
-  9  - 00000001 - <value 1>
-  10  - 20000000 - ADD
-  11  - 40000001 - JMP 1
-  12  - 12000000 - DROP
-  13  - 12000000 - DROP
-  14  - 43000000 - RET
-  15  - 11000000 - DUP
-  16  - 10000000 - LIT
-  17  - 00000000 - <value 0>
-  18  - 25000000 - EQ
-  19  - 4100001B - JZ 27
-  20  - 12000000 - DROP
-  21  - 10000000 - LIT
-  22  - 00000030 - <value 48>
-  23  - 10000000 - LIT
+  0  - 4000039C - JMP 924
+  4  - 11000000 - DUP
+  8  - 30000000 - LOAD
+  12  - 11000000 - DUP
+  16  - 41000030 - JZ 48
+  20  - 10000000 - LIT
   24  - FFFFFFF2 - <value -14>
-  25  - 31000000 - STORE
-  26  - 43000000 - RET
-  27  - 11000000 - DUP
-  28  - 10000000 - LIT
-  29  - 00000000 - <value 0>
-  30  - 26000000 - LT
-  31  - 11000000 - DUP
-  32  - 4100002C - JZ 44
-  33  - 10000000 - LIT
-  34  - 0000002D - <value 45>
-  35  - 10000000 - LIT
-  36  - FFFFFFF2 - <value -14>
-  37  - 31000000 - STORE
-  38  - 13000000 - SWAP
-  39  - 29000000 - INVERT
-  40  - 10000000 - LIT
-  41  - 00000001 - <value 1>
-  42  - 20000000 - ADD
-  43  - 13000000 - SWAP
-  44  - 12000000 - DROP
-  45  - 10000000 - LIT
-  46  - 00000000 - <value 0>
-  47  - 13000000 - SWAP
-  48  - 11000000 - DUP
-  49  - 41000040 - JZ 64
-  50  - 11000000 - DUP
-  51  - 10000000 - LIT
-  52  - 0000000A - <value 10>
-  53  - 24000000 - MOD
-  54  - 50000000 - >R
-  55  - 10000000 - LIT
-  56  - 0000000A - <value 10>
-  57  - 23000000 - DIV
-  58  - 13000000 - SWAP
-  59  - 10000000 - LIT
-  60  - 00000001 - <value 1>
-  61  - 20000000 - ADD
-  62  - 13000000 - SWAP
-  63  - 40000030 - JMP 48
-  64  - 12000000 - DROP
-  65  - 11000000 - DUP
-  66  - 4100004E - JZ 78
-  67  - 10000000 - LIT
-  68  - 00000001 - <value 1>
-  69  - 21000000 - SUB
-  70  - 51000000 - R>
-  71  - 10000000 - LIT
-  72  - 00000030 - <value 48>
-  73  - 20000000 - ADD
-  74  - 10000000 - LIT
-  75  - FFFFFFF2 - <value -14>
-  76  - 31000000 - STORE
-  77  - 40000041 - JMP 65
-  78  - 12000000 - DROP
-  79  - 43000000 - RET
-  80  - 10000000 - LIT
-  81  - 000000EB - <value 235>
-  82  - 43000000 - RET
-  83  - 10000000 - LIT
-  84  - 0000010C - <value 268>
-  85  - 43000000 - RET
-  86  - 10000000 - LIT
-  87  - 0000010D - <value 269>
-  88  - 43000000 - RET
-  89  - 10000000 - LIT
-  90  - 0000010E - <value 270>
-  91  - 43000000 - RET
+  28  - 31000000 - STORE
+  32  - 10000000 - LIT
+  36  - 00000004 - <value 4>
+  40  - 20000000 - ADD
+  44  - 40000004 - JMP 4
+  48  - 12000000 - DROP
+  52  - 12000000 - DROP
+  56  - 43000000 - RET
+  60  - 11000000 - DUP
+  64  - 10000000 - LIT
+  68  - 00000000 - <value 0>
+  72  - 25000000 - EQ
+  76  - 4100006C - JZ 108
+  80  - 12000000 - DROP
+  84  - 10000000 - LIT
+  88  - 00000030 - <value 48>
   92  - 10000000 - LIT
-  93  - 00000000 - <value 0>
-  94  - 10000000 - LIT
-  95  - FFFFFFF0 - <value -16>
-  96  - 30000000 - LOAD
-  97  - 11000000 - DUP
-  98  - 10000000 - LIT
-  99  - 0000000A - <value 10>
-  100  - 25000000 - EQ
-  101  - 29000000 - INVERT
-  102  - 41000071 - JZ 113
-  103  - 10000000 - LIT
-  104  - 00000030 - <value 48>
-  105  - 21000000 - SUB
-  106  - 13000000 - SWAP
-  107  - 10000000 - LIT
-  108  - 0000000A - <value 10>
-  109  - 22000000 - MUL
-  110  - 13000000 - SWAP
-  111  - 20000000 - ADD
-  112  - 4000005E - JMP 94
-  113  - 12000000 - DROP
-  114  - 43000000 - RET
-  115  - 10000000 - LIT
-  116  - FFFFFFF1 - <value -15>
-  117  - 30000000 - LOAD
-  118  - 41000085 - JZ 133
-  119  - 4200005C - CALL 92
-  120  - 42000050 - CALL 80
-  121  - 42000053 - CALL 83
-  122  - 30000000 - LOAD
-  123  - 20000000 - ADD
-  124  - 31000000 - STORE
-  125  - 42000053 - CALL 83
-  126  - 30000000 - LOAD
-  127  - 10000000 - LIT
-  128  - 00000001 - <value 1>
-  129  - 20000000 - ADD
-  130  - 42000053 - CALL 83
-  131  - 31000000 - STORE
-  132  - 40000073 - JMP 115
-  133  - 43000000 - RET
-  134  - 11000000 - DUP
-  135  - 42000050 - CALL 80
-  136  - 20000000 - ADD
-  137  - 30000000 - LOAD
-  138  - 42000056 - CALL 86
-  139  - 31000000 - STORE
-  140  - 11000000 - DUP
-  141  - 10000000 - LIT
-  142  - 00000001 - <value 1>
-  143  - 20000000 - ADD
-  144  - 42000050 - CALL 80
-  145  - 20000000 - ADD
-  146  - 30000000 - LOAD
-  147  - 14000000 - OVER
-  148  - 42000050 - CALL 80
-  149  - 20000000 - ADD
-  150  - 31000000 - STORE
-  151  - 42000056 - CALL 86
-  152  - 30000000 - LOAD
-  153  - 13000000 - SWAP
-  154  - 10000000 - LIT
-  155  - 00000001 - <value 1>
-  156  - 20000000 - ADD
-  157  - 42000050 - CALL 80
-  158  - 20000000 - ADD
-  159  - 31000000 - STORE
-  160  - 43000000 - RET
-  161  - 10000000 - LIT
-  162  - 00000000 - <value 0>
-  163  - 42000059 - CALL 89
-  164  - 31000000 - STORE
-  165  - 10000000 - LIT
-  166  - 00000000 - <value 0>
-  167  - 11000000 - DUP
-  168  - 42000053 - CALL 83
-  169  - 30000000 - LOAD
-  170  - 10000000 - LIT
-  171  - 00000001 - <value 1>
-  172  - 21000000 - SUB
-  173  - 26000000 - LT
-  174  - 410000C6 - JZ 198
-  175  - 11000000 - DUP
-  176  - 42000050 - CALL 80
-  177  - 20000000 - ADD
-  178  - 30000000 - LOAD
-  179  - 14000000 - OVER
+  96  - FFFFFFF2 - <value -14>
+  100  - 31000000 - STORE
+  104  - 43000000 - RET
+  108  - 11000000 - DUP
+  112  - 10000000 - LIT
+  116  - 00000000 - <value 0>
+  120  - 26000000 - LT
+  124  - 11000000 - DUP
+  128  - 410000B0 - JZ 176
+  132  - 10000000 - LIT
+  136  - 0000002D - <value 45>
+  140  - 10000000 - LIT
+  144  - FFFFFFF2 - <value -14>
+  148  - 31000000 - STORE
+  152  - 13000000 - SWAP
+  156  - 29000000 - INVERT
+  160  - 10000000 - LIT
+  164  - 00000001 - <value 1>
+  168  - 20000000 - ADD
+  172  - 13000000 - SWAP
+  176  - 12000000 - DROP
   180  - 10000000 - LIT
-  181  - 00000001 - <value 1>
-  182  - 20000000 - ADD
-  183  - 42000050 - CALL 80
-  184  - 20000000 - ADD
-  185  - 30000000 - LOAD
-  186  - 2A000000 - GT
-  187  - 410000C2 - JZ 194
-  188  - 11000000 - DUP
-  189  - 42000086 - CALL 134
-  190  - 10000000 - LIT
-  191  - 00000001 - <value 1>
-  192  - 42000059 - CALL 89
-  193  - 31000000 - STORE
-  194  - 10000000 - LIT
-  195  - 00000001 - <value 1>
-  196  - 20000000 - ADD
-  197  - 400000A7 - JMP 167
-  198  - 12000000 - DROP
-  199  - 43000000 - RET
-  200  - 420000A1 - CALL 161
-  201  - 42000059 - CALL 89
-  202  - 30000000 - LOAD
-  203  - 10000000 - LIT
-  204  - 00000000 - <value 0>
-  205  - 25000000 - EQ
-  206  - 410000C8 - JZ 200
-  207  - 43000000 - RET
-  208  - 10000000 - LIT
-  209  - 00000000 - <value 0>
-  210  - 11000000 - DUP
-  211  - 42000053 - CALL 83
-  212  - 30000000 - LOAD
-  213  - 26000000 - LT
-  214  - 410000E5 - JZ 229
-  215  - 11000000 - DUP
-  216  - 42000050 - CALL 80
-  217  - 20000000 - ADD
-  218  - 30000000 - LOAD
-  219  - 4200000F - CALL 15
+  184  - 00000000 - <value 0>
+  188  - 13000000 - SWAP
+  192  - 11000000 - DUP
+  196  - 41000100 - JZ 256
+  200  - 11000000 - DUP
+  204  - 10000000 - LIT
+  208  - 0000000A - <value 10>
+  212  - 24000000 - MOD
+  216  - 50000000 - >R
   220  - 10000000 - LIT
-  221  - 0000000A - <value 10>
-  222  - 10000000 - LIT
-  223  - FFFFFFF2 - <value -14>
-  224  - 31000000 - STORE
-  225  - 10000000 - LIT
-  226  - 00000001 - <value 1>
-  227  - 20000000 - ADD
-  228  - 400000D2 - JMP 210
-  229  - 12000000 - DROP
-  230  - 43000000 - RET
-  231  - 42000073 - CALL 115
-  232  - 420000C8 - CALL 200
-  233  - 420000D0 - CALL 208
-  234  - 01000000 - HALT
-  235  - 00000000 - NOP
-  236  - 00000000 - NOP
-  237  - 00000000 - NOP
-  238  - 00000000 - NOP
-  239  - 00000000 - NOP
-  240  - 00000000 - NOP
-  241  - 00000000 - NOP
-  242  - 00000000 - NOP
-  243  - 00000000 - NOP
-  244  - 00000000 - NOP
-  245  - 00000000 - NOP
-  246  - 00000000 - NOP
-  247  - 00000000 - NOP
-  248  - 00000000 - NOP
-  249  - 00000000 - NOP
-  250  - 00000000 - NOP
-  251  - 00000000 - NOP
-  252  - 00000000 - NOP
-  253  - 00000000 - NOP
-  254  - 00000000 - NOP
-  255  - 00000000 - NOP
-  256  - 00000000 - NOP
-  257  - 00000000 - NOP
-  258  - 00000000 - NOP
-  259  - 00000000 - NOP
-  260  - 00000000 - NOP
-  261  - 00000000 - NOP
-  262  - 00000000 - NOP
-  263  - 00000000 - NOP
-  264  - 00000000 - NOP
-  265  - 00000000 - NOP
-  266  - 00000000 - NOP
-  267  - 00000000 - NOP
-  268  - 00000000 - NOP
-  269  - 00000000 - NOP
-  270  - 00000000 - NOP
+  224  - 0000000A - <value 10>
+  228  - 23000000 - DIV
+  232  - 13000000 - SWAP
+  236  - 10000000 - LIT
+  240  - 00000001 - <value 1>
+  244  - 20000000 - ADD
+  248  - 13000000 - SWAP
+  252  - 400000C0 - JMP 192
+  256  - 12000000 - DROP
+  260  - 11000000 - DUP
+  264  - 41000138 - JZ 312
+  268  - 10000000 - LIT
+  272  - 00000001 - <value 1>
+  276  - 21000000 - SUB
+  280  - 51000000 - R>
+  284  - 10000000 - LIT
+  288  - 00000030 - <value 48>
+  292  - 20000000 - ADD
+  296  - 10000000 - LIT
+  300  - FFFFFFF2 - <value -14>
+  304  - 31000000 - STORE
+  308  - 40000104 - JMP 260
+  312  - 12000000 - DROP
+  316  - 43000000 - RET
+  320  - 10000000 - LIT
+  324  - 000003AC - <value 940>
+  328  - 43000000 - RET
+  332  - 10000000 - LIT
+  336  - 00000430 - <value 1072>
+  340  - 43000000 - RET
+  344  - 10000000 - LIT
+  348  - 00000434 - <value 1076>
+  352  - 43000000 - RET
+  356  - 10000000 - LIT
+  360  - 00000438 - <value 1080>
+  364  - 43000000 - RET
+  368  - 10000000 - LIT
+  372  - 00000000 - <value 0>
+  376  - 10000000 - LIT
+  380  - FFFFFFF0 - <value -16>
+  384  - 30000000 - LOAD
+  388  - 11000000 - DUP
+  392  - 10000000 - LIT
+  396  - 0000000A - <value 10>
+  400  - 25000000 - EQ
+  404  - 29000000 - INVERT
+  408  - 410001C4 - JZ 452
+  412  - 10000000 - LIT
+  416  - 00000030 - <value 48>
+  420  - 21000000 - SUB
+  424  - 13000000 - SWAP
+  428  - 10000000 - LIT
+  432  - 0000000A - <value 10>
+  436  - 22000000 - MUL
+  440  - 13000000 - SWAP
+  444  - 20000000 - ADD
+  448  - 40000178 - JMP 376
+  452  - 12000000 - DROP
+  456  - 43000000 - RET
+  460  - 10000000 - LIT
+  464  - FFFFFFF1 - <value -15>
+  468  - 30000000 - LOAD
+  472  - 41000214 - JZ 532
+  476  - 42000170 - CALL 368
+  480  - 42000140 - CALL 320
+  484  - 4200014C - CALL 332
+  488  - 30000000 - LOAD
+  492  - 20000000 - ADD
+  496  - 31000000 - STORE
+  500  - 4200014C - CALL 332
+  504  - 30000000 - LOAD
+  508  - 10000000 - LIT
+  512  - 00000001 - <value 1>
+  516  - 20000000 - ADD
+  520  - 4200014C - CALL 332
+  524  - 31000000 - STORE
+  528  - 400001CC - JMP 460
+  532  - 43000000 - RET
+  536  - 11000000 - DUP
+  540  - 42000140 - CALL 320
+  544  - 20000000 - ADD
+  548  - 30000000 - LOAD
+  552  - 42000158 - CALL 344
+  556  - 31000000 - STORE
+  560  - 11000000 - DUP
+  564  - 10000000 - LIT
+  568  - 00000001 - <value 1>
+  572  - 20000000 - ADD
+  576  - 42000140 - CALL 320
+  580  - 20000000 - ADD
+  584  - 30000000 - LOAD
+  588  - 14000000 - OVER
+  592  - 42000140 - CALL 320
+  596  - 20000000 - ADD
+  600  - 31000000 - STORE
+  604  - 42000158 - CALL 344
+  608  - 30000000 - LOAD
+  612  - 13000000 - SWAP
+  616  - 10000000 - LIT
+  620  - 00000001 - <value 1>
+  624  - 20000000 - ADD
+  628  - 42000140 - CALL 320
+  632  - 20000000 - ADD
+  636  - 31000000 - STORE
+  640  - 43000000 - RET
+  644  - 10000000 - LIT
+  648  - 00000000 - <value 0>
+  652  - 42000164 - CALL 356
+  656  - 31000000 - STORE
+  660  - 10000000 - LIT
+  664  - 00000000 - <value 0>
+  668  - 11000000 - DUP
+  672  - 4200014C - CALL 332
+  676  - 30000000 - LOAD
+  680  - 10000000 - LIT
+  684  - 00000001 - <value 1>
+  688  - 21000000 - SUB
+  692  - 26000000 - LT
+  696  - 41000318 - JZ 792
+  700  - 11000000 - DUP
+  704  - 42000140 - CALL 320
+  708  - 20000000 - ADD
+  712  - 30000000 - LOAD
+  716  - 14000000 - OVER
+  720  - 10000000 - LIT
+  724  - 00000001 - <value 1>
+  728  - 20000000 - ADD
+  732  - 42000140 - CALL 320
+  736  - 20000000 - ADD
+  740  - 30000000 - LOAD
+  744  - 2A000000 - GT
+  748  - 41000308 - JZ 776
+  752  - 11000000 - DUP
+  756  - 42000218 - CALL 536
+  760  - 10000000 - LIT
+  764  - 00000001 - <value 1>
+  768  - 42000164 - CALL 356
+  772  - 31000000 - STORE
+  776  - 10000000 - LIT
+  780  - 00000001 - <value 1>
+  784  - 20000000 - ADD
+  788  - 4000029C - JMP 668
+  792  - 12000000 - DROP
+  796  - 43000000 - RET
+  800  - 42000284 - CALL 644
+  804  - 42000164 - CALL 356
+  808  - 30000000 - LOAD
+  812  - 10000000 - LIT
+  816  - 00000000 - <value 0>
+  820  - 25000000 - EQ
+  824  - 41000320 - JZ 800
+  828  - 43000000 - RET
+  832  - 10000000 - LIT
+  836  - 00000000 - <value 0>
+  840  - 11000000 - DUP
+  844  - 4200014C - CALL 332
+  848  - 30000000 - LOAD
+  852  - 26000000 - LT
+  856  - 41000394 - JZ 916
+  860  - 11000000 - DUP
+  864  - 42000140 - CALL 320
+  868  - 20000000 - ADD
+  872  - 30000000 - LOAD
+  876  - 4200003C - CALL 60
+  880  - 10000000 - LIT
+  884  - 0000000A - <value 10>
+  888  - 10000000 - LIT
+  892  - FFFFFFF2 - <value -14>
+  896  - 31000000 - STORE
+  900  - 10000000 - LIT
+  904  - 00000001 - <value 1>
+  908  - 20000000 - ADD
+  912  - 40000348 - JMP 840
+  916  - 12000000 - DROP
+  920  - 43000000 - RET
+  924  - 420001CC - CALL 460
+  928  - 42000320 - CALL 800
+  932  - 42000340 - CALL 832
+  936  - 01000000 - HALT
+  940  - 00000000 - NOP
+  944  - 00000000 - NOP
+  948  - 00000000 - NOP
+  952  - 00000000 - NOP
+  956  - 00000000 - NOP
+  960  - 00000000 - NOP
+  964  - 00000000 - NOP
+  968  - 00000000 - NOP
+  972  - 00000000 - NOP
+  976  - 00000000 - NOP
+  980  - 00000000 - NOP
+  984  - 00000000 - NOP
+  988  - 00000000 - NOP
+  992  - 00000000 - NOP
+  996  - 00000000 - NOP
+  1000  - 00000000 - NOP
+  1004  - 00000000 - NOP
+  1008  - 00000000 - NOP
+  1012  - 00000000 - NOP
+  1016  - 00000000 - NOP
+  1020  - 00000000 - NOP
+  1024  - 00000000 - NOP
+  1028  - 00000000 - NOP
+  1032  - 00000000 - NOP
+  1036  - 00000000 - NOP
+  1040  - 00000000 - NOP
+  1044  - 00000000 - NOP
+  1048  - 00000000 - NOP
+  1052  - 00000000 - NOP
+  1056  - 00000000 - NOP
+  1060  - 00000000 - NOP
+  1064  - 00000000 - NOP
+  1068  - 00000000 - NOP
+  1072  - 00000000 - NOP
+  1076  - 00000000 - NOP
+  1080  - 00000000 - NOP
 out_stdout: |
 out_log: |-
   DEBUG   machine:simulation    TICK:   0 PC:   0 mPC: 0 TOS:         0 NOS:         0  JMP
   DEBUG   cache:request       cache READ  addr=0x00000000 → MISS line=0 (stall 9)
-  DEBUG   machine:simulation    TICK:   1 PC:   1 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:   2 PC:   1 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:   3 PC:   1 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:   4 PC:   1 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:   5 PC:   1 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:   6 PC:   1 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:   7 PC:   1 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:   8 PC:   1 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:   9 PC:   1 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  10 PC:   1 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  11 PC:   1 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  12 PC:   1 mPC:27 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  13 PC: 231 mPC: 0 TOS:         0 NOS:         0  CALL
-  DEBUG   cache:request       cache READ  addr=0x000000E7 → MISS line=1 (stall 9)
-  DEBUG   machine:simulation    TICK:  14 PC: 232 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  15 PC: 232 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  16 PC: 232 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  17 PC: 232 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  18 PC: 232 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  19 PC: 232 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  20 PC: 232 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  21 PC: 232 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  22 PC: 232 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  23 PC: 232 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  24 PC: 232 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  25 PC: 232 mPC:29 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  26 PC: 115 mPC: 0 TOS:         0 NOS:         0  LIT
-  DEBUG   cache:request       cache READ  addr=0x00000073 → MISS line=0 (stall 9)
-  DEBUG   machine:simulation    TICK:  27 PC: 116 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  28 PC: 116 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  29 PC: 116 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  30 PC: 116 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  31 PC: 116 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  32 PC: 116 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  33 PC: 116 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  34 PC: 116 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  35 PC: 116 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  36 PC: 116 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  37 PC: 116 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  38 PC: 116 mPC: 4 TOS:         0 NOS:         0  
-  DEBUG   cache:request       cache READ  addr=0x00000074 → MISS line=1 (stall 9)
-  DEBUG   machine:simulation    TICK:  39 PC: 117 mPC: 5 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  40 PC: 117 mPC: 5 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  41 PC: 117 mPC: 5 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  42 PC: 117 mPC: 5 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  43 PC: 117 mPC: 5 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  44 PC: 117 mPC: 5 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  45 PC: 117 mPC: 5 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  46 PC: 117 mPC: 5 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  47 PC: 117 mPC: 5 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  48 PC: 117 mPC: 5 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  49 PC: 117 mPC: 5 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  50 PC: 117 mPC: 0 TOS:       -15 NOS:         0  LOAD
-  DEBUG   cache:request       cache READ  addr=0x00000075 → HIT  line=1
-  DEBUG   machine:simulation    TICK:  51 PC: 118 mPC: 1 TOS:       -15 NOS:         0  
-  DEBUG   machine:simulation    TICK:  52 PC: 118 mPC:23 TOS:       -15 NOS:         0  
-  DEBUG   machine:simulation    TICK:  53 PC: 118 mPC:24 TOS:       -15 NOS:         0  
-  DEBUG   machine:simulation    TICK:  54 PC: 118 mPC:24 TOS:       -15 NOS:         0  
-  DEBUG   machine:simulation    TICK:  55 PC: 118 mPC: 0 TOS:         1 NOS:         0  JZ
-  DEBUG   cache:request       cache READ  addr=0x00000076 → HIT  line=1
-  DEBUG   machine:simulation    TICK:  56 PC: 119 mPC: 1 TOS:         1 NOS:         0  
-  DEBUG   machine:simulation    TICK:  57 PC: 119 mPC:28 TOS:         1 NOS:         0  
-  DEBUG   machine:simulation    TICK:  58 PC: 119 mPC: 0 TOS:         0 NOS:         0  CALL
-  DEBUG   cache:request       cache READ  addr=0x00000077 → HIT  line=1
-  DEBUG   machine:simulation    TICK:  59 PC: 120 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  60 PC: 120 mPC:29 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  61 PC:  92 mPC: 0 TOS:         0 NOS:         0  LIT
-  DEBUG   cache:request       cache READ  addr=0x0000005C → MISS line=3 (stall 9)
-  DEBUG   machine:simulation    TICK:  62 PC:  93 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  63 PC:  93 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  64 PC:  93 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  65 PC:  93 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  66 PC:  93 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  67 PC:  93 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  68 PC:  93 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  69 PC:  93 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  70 PC:  93 mPC: 1 TOS:         0 NOS:         0  
-  DEBUG   machine:simulation    TICK:  71 PC:  93 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   1 PC:   4 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   2 PC:   4 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   3 PC:   4 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   4 PC:   4 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   5 PC:   4 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   6 PC:   4 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   7 PC:   4 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   8 PC:   4 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:   9 PC:   4 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  10 PC:   4 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  11 PC:   4 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  12 PC:   4 mPC:27 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  13 PC: 924 mPC: 0 TOS:         0 NOS:         0  CALL
+  DEBUG   cache:request       cache READ  addr=0x0000039C → MISS line=1 (stall 9)
+  DEBUG   machine:simulation    TICK:  14 PC: 928 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  15 PC: 928 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  16 PC: 928 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  17 PC: 928 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  18 PC: 928 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  19 PC: 928 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  20 PC: 928 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  21 PC: 928 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  22 PC: 928 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  23 PC: 928 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  24 PC: 928 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  25 PC: 928 mPC:29 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  26 PC: 460 mPC: 0 TOS:         0 NOS:         0  LIT
+  DEBUG   cache:request       cache READ  addr=0x000001CC → MISS line=0 (stall 9)
+  DEBUG   machine:simulation    TICK:  27 PC: 464 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  28 PC: 464 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  29 PC: 464 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  30 PC: 464 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  31 PC: 464 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  32 PC: 464 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  33 PC: 464 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  34 PC: 464 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  35 PC: 464 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  36 PC: 464 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  37 PC: 464 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  38 PC: 464 mPC: 4 TOS:         0 NOS:         0  
+  DEBUG   cache:request       cache READ  addr=0x000001D0 → MISS line=1 (stall 9)
+  DEBUG   machine:simulation    TICK:  39 PC: 468 mPC: 5 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  40 PC: 468 mPC: 5 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  41 PC: 468 mPC: 5 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  42 PC: 468 mPC: 5 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  43 PC: 468 mPC: 5 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  44 PC: 468 mPC: 5 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  45 PC: 468 mPC: 5 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  46 PC: 468 mPC: 5 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  47 PC: 468 mPC: 5 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  48 PC: 468 mPC: 5 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  49 PC: 468 mPC: 5 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  50 PC: 468 mPC: 0 TOS:       -15 NOS:         0  LOAD
+  DEBUG   cache:request       cache READ  addr=0x000001D4 → HIT  line=1
+  DEBUG   machine:simulation    TICK:  51 PC: 472 mPC: 1 TOS:       -15 NOS:         0  
+  DEBUG   machine:simulation    TICK:  52 PC: 472 mPC:23 TOS:       -15 NOS:         0  
+  DEBUG   machine:simulation    TICK:  53 PC: 472 mPC:24 TOS:       -15 NOS:         0  
+  DEBUG   machine:simulation    TICK:  54 PC: 472 mPC:24 TOS:       -15 NOS:         0  
+  DEBUG   machine:simulation    TICK:  55 PC: 472 mPC: 0 TOS:         1 NOS:         0  JZ
+  DEBUG   cache:request       cache READ  addr=0x000001D8 → HIT  line=1
+  DEBUG   machine:simulation    TICK:  56 PC: 476 mPC: 1 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  57 PC: 476 mPC:28 TOS:         1 NOS:         0  
+  DEBUG   machine:simulation    TICK:  58 PC: 476 mPC: 0 TOS:         0 NOS:         0  CALL
+  DEBUG   cache:request       cache READ  addr=0x000001DC → HIT  line=1
+  DEBUG   machine:simulation    TICK:  59 PC: 480 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  60 PC: 480 mPC:29 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  61 PC: 368 mPC: 0 TOS:         0 NOS:         0  LIT
+  DEBUG   cache:request       cache READ  addr=0x00000170 → MISS line=3 (stall 9)
+  DEBUG   machine:simulation    TICK:  62 PC: 372 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  63 PC: 372 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  64 PC: 372 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  65 PC: 372 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  66 PC: 372 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  67 PC: 372 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  68 PC: 372 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  69 PC: 372 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  70 PC: 372 mPC: 1 TOS:         0 NOS:         0  
+  DEBUG   machine:simulation    TICK:  71 PC: 372 mPC: 1 TOS:         0 NOS:         0  
   ... <1353 log records skipped> ...
-  DEBUG   machine:simulation    TICK:1196 PC: 113 mPC: 1 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1197 PC: 113 mPC: 1 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1198 PC: 113 mPC: 1 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1199 PC: 113 mPC: 1 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1200 PC: 113 mPC:27 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1201 PC:  94 mPC: 0 TOS:-2133436276 NOS:         0  LIT
-  DEBUG   cache:request       cache READ  addr=0x0000005E → MISS line=3 (stall 9)
-  DEBUG   machine:simulation    TICK:1202 PC:  95 mPC: 1 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1203 PC:  95 mPC: 1 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1204 PC:  95 mPC: 1 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1205 PC:  95 mPC: 1 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1206 PC:  95 mPC: 1 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1207 PC:  95 mPC: 1 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1208 PC:  95 mPC: 1 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1209 PC:  95 mPC: 1 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1210 PC:  95 mPC: 1 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1211 PC:  95 mPC: 1 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1212 PC:  95 mPC: 1 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1213 PC:  95 mPC: 4 TOS:-2133436276 NOS:         0  
-  DEBUG   cache:request       cache READ  addr=0x0000005F → HIT  line=3
-  DEBUG   machine:simulation    TICK:1214 PC:  96 mPC: 5 TOS:-2133436276 NOS:         0  
-  DEBUG   machine:simulation    TICK:1215 PC:  96 mPC: 0 TOS:       -16 NOS:-2133436276  LOAD
-  DEBUG   cache:request       cache READ  addr=0x00000060 → MISS line=0 (stall 9)
-  DEBUG   machine:simulation    TICK:1216 PC:  97 mPC: 1 TOS:       -16 NOS:-2133436276  
-  DEBUG   machine:simulation    TICK:1217 PC:  97 mPC: 1 TOS:       -16 NOS:-2133436276  
-  DEBUG   machine:simulation    TICK:1218 PC:  97 mPC: 1 TOS:       -16 NOS:-2133436276  
-  DEBUG   machine:simulation    TICK:1219 PC:  97 mPC: 1 TOS:       -16 NOS:-2133436276  
-  DEBUG   machine:simulation    TICK:1220 PC:  97 mPC: 1 TOS:       -16 NOS:-2133436276  
-  DEBUG   machine:simulation    TICK:1221 PC:  97 mPC: 1 TOS:       -16 NOS:-2133436276  
-  DEBUG   machine:simulation    TICK:1222 PC:  97 mPC: 1 TOS:       -16 NOS:-2133436276  
-  DEBUG   machine:simulation    TICK:1223 PC:  97 mPC: 1 TOS:       -16 NOS:-2133436276  
-  DEBUG   machine:simulation    TICK:1224 PC:  97 mPC: 1 TOS:       -16 NOS:-2133436276  
-  DEBUG   machine:simulation    TICK:1225 PC:  97 mPC: 1 TOS:       -16 NOS:-2133436276  
-  DEBUG   machine:simulation    TICK:1226 PC:  97 mPC: 1 TOS:       -16 NOS:-2133436276  
-  DEBUG   machine:simulation    TICK:1227 PC:  97 mPC:23 TOS:       -16 NOS:-2133436276  
-  DEBUG   machine:simulation    TICK:1228 PC:  97 mPC:24 TOS:       -16 NOS:-2133436276  
+  DEBUG   machine:simulation    TICK:1196 PC: 452 mPC: 1 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1197 PC: 452 mPC: 1 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1198 PC: 452 mPC: 1 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1199 PC: 452 mPC: 1 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1200 PC: 452 mPC:27 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1201 PC: 376 mPC: 0 TOS:-2133436276 NOS:         0  LIT
+  DEBUG   cache:request       cache READ  addr=0x00000178 → MISS line=3 (stall 9)
+  DEBUG   machine:simulation    TICK:1202 PC: 380 mPC: 1 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1203 PC: 380 mPC: 1 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1204 PC: 380 mPC: 1 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1205 PC: 380 mPC: 1 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1206 PC: 380 mPC: 1 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1207 PC: 380 mPC: 1 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1208 PC: 380 mPC: 1 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1209 PC: 380 mPC: 1 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1210 PC: 380 mPC: 1 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1211 PC: 380 mPC: 1 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1212 PC: 380 mPC: 1 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1213 PC: 380 mPC: 4 TOS:-2133436276 NOS:         0  
+  DEBUG   cache:request       cache READ  addr=0x0000017C → HIT  line=3
+  DEBUG   machine:simulation    TICK:1214 PC: 384 mPC: 5 TOS:-2133436276 NOS:         0  
+  DEBUG   machine:simulation    TICK:1215 PC: 384 mPC: 0 TOS:       -16 NOS:-2133436276  LOAD
+  DEBUG   cache:request       cache READ  addr=0x00000180 → MISS line=0 (stall 9)
+  DEBUG   machine:simulation    TICK:1216 PC: 388 mPC: 1 TOS:       -16 NOS:-2133436276  
+  DEBUG   machine:simulation    TICK:1217 PC: 388 mPC: 1 TOS:       -16 NOS:-2133436276  
+  DEBUG   machine:simulation    TICK:1218 PC: 388 mPC: 1 TOS:       -16 NOS:-2133436276  
+  DEBUG   machine:simulation    TICK:1219 PC: 388 mPC: 1 TOS:       -16 NOS:-2133436276  
+  DEBUG   machine:simulation    TICK:1220 PC: 388 mPC: 1 TOS:       -16 NOS:-2133436276  
+  DEBUG   machine:simulation    TICK:1221 PC: 388 mPC: 1 TOS:       -16 NOS:-2133436276  
+  DEBUG   machine:simulation    TICK:1222 PC: 388 mPC: 1 TOS:       -16 NOS:-2133436276  
+  DEBUG   machine:simulation    TICK:1223 PC: 388 mPC: 1 TOS:       -16 NOS:-2133436276  
+  DEBUG   machine:simulation    TICK:1224 PC: 388 mPC: 1 TOS:       -16 NOS:-2133436276  
+  DEBUG   machine:simulation    TICK:1225 PC: 388 mPC: 1 TOS:       -16 NOS:-2133436276  
+  DEBUG   machine:simulation    TICK:1226 PC: 388 mPC: 1 TOS:       -16 NOS:-2133436276  
+  DEBUG   machine:simulation    TICK:1227 PC: 388 mPC:23 TOS:       -16 NOS:-2133436276  
+  DEBUG   machine:simulation    TICK:1228 PC: 388 mPC:24 TOS:       -16 NOS:-2133436276  
   WARNING machine:simulation    Input buffer exhausted (EOF)
   INFO    machine:simulation    output: []
   INFO    machine:simulation    ticks: 1228

@@ -21,16 +21,16 @@ variable swapped
     0xFFFFFFF1 @
   while
     read_num
-    arr count @ + !
+    arr count @ cells + !
     count @ 1 + count !
   repeat
 ;
 
 ( swap_pair i -- меняет arr[i] и arr[i+1] )
 : swap_pair
-  dup arr + @ tmp !
-  dup 1 + arr + @ over arr + !
-  tmp @ swap 1 + arr + !
+  dup cells arr + @ tmp !
+  dup 1 + cells arr + @ over cells arr + !
+  tmp @ swap 1 + cells arr + !
 ;
 
 ( bubble_pass -- один проход, пишет в swapped 1 если был обмен )
@@ -40,8 +40,8 @@ variable swapped
   begin
     dup count @ 1 - <
   while
-    dup arr + @
-    over 1 + arr + @
+    dup cells arr + @
+    over 1 + cells arr + @
     > if
       dup swap_pair
       1 swapped !
@@ -62,7 +62,7 @@ variable swapped
   begin
     dup count @ <
   while
-    dup arr + @ . cr
+    dup cells arr + @ . cr
     1 +
   repeat
   drop

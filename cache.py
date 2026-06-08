@@ -51,24 +51,30 @@ class _Line:
 class MainMemory:
     """Идеальная память без задержек.
 
-    Размер задаётся в словах (32 бита). Все задержки - ответственность Cache.
+    Адресация байтовая: снаружи все адреса в байтах и выровнены на 4.
+    Внутри хранится list[int] из 32-битных слов (индекс = addr >> 2).
+    Размер ``size`` задаётся в словах. Все задержки - ответственность Cache.
     """
 
     def __init__(self, size: int = 65536) -> None:
         self._data = [0] * size
 
     def read(self, addr: int) -> int:
-        """Прочитать слово по адресу."""
-        return self._data[addr]
+        """Прочитать слово по байтовому адресу (выровнен на 4)."""
+        assert addr & 3 == 0, f"unaligned read at 0x{addr:08X}"
+        return self._data[addr >> 2]
 
     def write(self, addr: int, val: int) -> None:
-        """Записать слово по адресу."""
-        self._data[addr] = val
+        """Записать слово по байтовому адресу (выровнен на 4)."""
+        assert addr & 3 == 0, f"unaligned write at 0x{addr:08X}"
+        self._data[addr >> 2] = val
 
     def load_image(self, words: list[int], at: int = 0) -> None:
-        """Загрузить список слов начиная с адреса at."""
+        """Загрузить список слов начиная с байтового адреса at (выровнен на 4)."""
+        assert at & 3 == 0, f"unaligned load at 0x{at:08X}"
+        base = at >> 2
         for i, w in enumerate(words):
-            self._data[at + i] = w
+            self._data[base + i] = w
 
 
 class Cache:
@@ -136,7 +142,7 @@ class Cache:
             if line.valid and line.dirty:
                 stall += self._penalty
                 self.stats.writebacks += 1
-                wb_base = (line.tag << (_OFFSET_BITS + _INDEX_BITS)) | (index << _OFFSET_BITS)
+                wb_base = _line_byte_base(line.tag, index)
                 log.debug(
                     "cache %-5s addr=0x%08X → MISS line=%d evict=DIRTY wb=0x%08X (stall %d)",
                     op.upper(),
@@ -190,15 +196,15 @@ class Cache:
 
         # Writeback грязной вытесняемой строки
         if line.valid and line.tag != tag and line.dirty:
-            old_base = (line.tag << (_OFFSET_BITS + _INDEX_BITS)) | (index << _OFFSET_BITS)
+            old_base = _line_byte_base(line.tag, index)
             for i in range(self._wpl):
-                self._ram.write(old_base + i, line.data[i])
+                self._ram.write(old_base + i * 4, line.data[i])
             line.dirty = False
 
         # Загрузка строки (miss)
         if not line.valid or line.tag != tag:
-            line_base = (tag << (_OFFSET_BITS + _INDEX_BITS)) | (index << _OFFSET_BITS)
-            line.data = [self._ram.read(line_base + i) for i in range(self._wpl)]
+            line_base = _line_byte_base(tag, index)
+            line.data = [self._ram.read(line_base + i * 4) for i in range(self._wpl)]
             line.tag = tag
             line.valid = True
             line.dirty = False
@@ -232,21 +238,31 @@ class Cache:
                 self._ram.write(addr, data)
 
 
-def _split(addr: int) -> tuple[int, int, int]:
-    """Разбить адрес на (tag, index, offset).
+def _split(byte_addr: int) -> tuple[int, int, int]:
+    """Разбить БАЙТОВЫЙ адрес (выровнен на 4) на (tag, index, offset).
+
+    Сначала переходим к адресу слова (byte_addr >> 2), затем как раньше:
+    offset - слово внутри строки, index - номер строки, tag - остальное.
 
     >>> _split(0x00000000)
     (0, 0, 0)
-    >>> _split(0x00000001)
-    (0, 0, 1)
     >>> _split(0x00000004)
-    (0, 1, 0)
+    (0, 0, 1)
     >>> _split(0x00000010)
+    (0, 1, 0)
+    >>> _split(0x00000040)
     (1, 0, 0)
-    >>> _split(0x00000017)
+    >>> _split(0x0000005C)
     (1, 1, 3)
     """
-    offset = addr & _OFFSET_MASK
-    index = (addr >> _OFFSET_BITS) & _INDEX_MASK
-    tag = addr >> (_OFFSET_BITS + _INDEX_BITS)
+    word_addr = byte_addr >> 2
+    offset = word_addr & _OFFSET_MASK
+    index = (word_addr >> _OFFSET_BITS) & _INDEX_MASK
+    tag = word_addr >> (_OFFSET_BITS + _INDEX_BITS)
     return tag, index, offset
+
+
+def _line_byte_base(tag: int, index: int) -> int:
+    """Байтовый адрес первого слова строки (tag, index)."""
+    word_base = (tag << (_OFFSET_BITS + _INDEX_BITS)) | (index << _OFFSET_BITS)
+    return word_base << 2
