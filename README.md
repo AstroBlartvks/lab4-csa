@@ -1010,3 +1010,4 @@ classDiagram
     simulation --> DataPath : создаёт с cache
     simulation --> ControlUnit : создаёт с dp+cache
 ```
+
