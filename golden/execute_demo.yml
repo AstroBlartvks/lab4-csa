@@ -1,5 +1,4 @@
 in_source: |
-  \ Demonstration of execution tokens: ' (tick) and execute
 
   : double 2 * ;
   : triple 3 * ;

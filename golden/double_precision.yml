@@ -1,5 +1,4 @@
 in_source: |
-  \ 64-bit arithmetic: compute 20! using (lo hi) pair in variables
 
   variable dlo  variable dhi
   variable i

@@ -240,7 +240,7 @@ out_code_hex: |-
   840  - 00000000 - NOP
 out_stdout: |
   What is your name?
-  Hello, cccce!
+  Hello, Alice!
 out_log: |-
   DEBUG   machine:simulation    TICK:   0 PC:   0 mPC: 0 TOS:         0 NOS:         0  JMP
   DEBUG   cache:request       cache READ  addr=0x00000000 → MISS line=0 (stall 9)

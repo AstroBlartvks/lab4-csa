@@ -8,7 +8,7 @@ in_source: |
   variable j
   variable _n
 
-  : not_palindrome  ( n -- flag )  \ returns 0 if IS palindrome, nonzero if NOT
+  : not_palindrome  ( n -- flag ) 
     _n !
     _n @ 100000 /  _n @ 10 mod  <>
     _n @ 10000 / 10 mod  _n @ 10 / 10 mod  <> or

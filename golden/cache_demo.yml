@@ -1,6 +1,5 @@
 in_source: |
-  \ Cache demonstration: cold miss vs hot hit
-  \ Array of 16 words; two summation passes to show cache effect
+  \ cold miss vs hot hit
 
   variable arr
   15 allot
@@ -8,7 +7,6 @@ in_source: |
   variable i
   variable sum
 
-  \ Fill arr[0..15] with 1..16
   0 i !
   begin i @ 16 < while
     i @ 1 +        ( value = i+1 )
@@ -17,7 +15,6 @@ in_source: |
     i @ 1 + i !
   repeat
 
-  \ Cold pass: first traversal (cache MISS)
   0 sum !
   0 i !
   begin i @ 16 < while
@@ -26,7 +23,6 @@ in_source: |
   repeat
   sum @ . cr
 
-  \ Hot pass: second traversal (cache HIT)
   0 sum !
   0 i !
   begin i @ 16 < while
