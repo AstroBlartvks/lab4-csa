@@ -176,7 +176,7 @@ tick        ::= "'" name ;    (* push execution token *)
 | `JMP a` | 0x40 | - | безусловный переход на адрес `a` | 3 |
 | `JZ a` | 0x41 | flag -> | переход если pop == 0 | 3 |
 | `CALL a` | 0x42 | - | push PC+1 на RS; PC ← a | 3 |
-| `RET` | 0x43 | - | PC ← pop с RS | 1 |
+| `RET` | 0x43 | - | PC ← pop с RS | 3 |
 | `EXECUTE` | 0x44 | xt -> | call по адресу с вершины DS | 3 |
 | **Стек возвратов** ||||
 | `>R` | 0x50 | a -> ⟨RS: a⟩ | переслать с DS на RS | 3 |
