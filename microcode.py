@@ -91,77 +91,74 @@ class MemOp(Enum):
 
 @dataclass(frozen=True)
 class LatchPc:
-    """PC ← (sel)."""
+    """PC <- (sel)."""
 
     sel: PcSel
 
 
 @dataclass(frozen=True)
 class LatchIr:
-    """IR ← MDR."""
+    """IR <- MDR."""
 
 
 @dataclass(frozen=True)
 class LatchMar:
-    """MAR ← (sel)."""
+    """MAR <- (sel)."""
 
     sel: MarSel
 
 
 @dataclass(frozen=True)
 class LatchMdr:
-    """MDR ← (sel)."""
+    """MDR <- (sel)."""
 
     sel: MdrSel
 
 
 @dataclass(frozen=True)
 class LatchTos:
-    """TOS ← (sel); флаги Z/N обновляются от нового TOS."""
+    """TOS <- (sel); флаги Z/N обновляются от нового TOS."""
 
     sel: TosSel
 
 
 @dataclass(frozen=True)
 class LatchNos:
-    """NOS ← (sel). Использовать только без push/pop."""
+    """NOS <- (sel). Использовать только без push/pop."""
 
     sel: NosSel
 
 
 @dataclass(frozen=True)
 class LatchTors:
-    """TORS ← (sel)."""
+    """TORS <- (sel)."""
 
     sel: TorsSel
 
 
 @dataclass(frozen=True)
 class DStackPush:
-    """DS_SRAM[DSP] ← NOS; DSP++; NOS ← TOS."""
+    """DS_SRAM[DSP] <- NOS; DSP++; NOS <- TOS."""
 
 
 @dataclass(frozen=True)
 class DStackPop:
-    """DSP--; NOS ← DS_SRAM[DSP]."""
+    """DSP--; NOS <- DS_SRAM[DSP]."""
 
 
 @dataclass(frozen=True)
 class RStackPush:
-    """RS_SRAM[RSP] ← TORS; RSP++."""
+    """RS_SRAM[RSP] <- TORS; RSP++."""
 
 
 @dataclass(frozen=True)
 class RStackPop:
-    """RSP--; TORS ← RS_SRAM[RSP-1] (восстановление TORS кадра-родителя).
-
-    Снимаемое значение уже использовано вызывающим (RET берёт PC из TORS,
-    R> копирует TORS в TOS) до pop. См. DataPath.rstack_pop."""
+    """RSP--; TORS <- RS_SRAM[RSP-1]"""
 
 
 @dataclass(frozen=True)
 class AluOp:
-    """Запустить ALU над (NOS op TOS). Результат на шине ALU.OUT."""
+    """Запустить ALU над (NOS op TOS)"""
 
     op: AluOpSel
 
@@ -175,7 +172,7 @@ class MemRequest:
 
 @dataclass(frozen=True)
 class LatchMpc:
-    """mPC ← (sel)."""
+    """mPC <- (sel)."""
 
     sel: MpcSel
 

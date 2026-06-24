@@ -1,6 +1,6 @@
-"""Транслятор Forth → бинарный машинный код стековой машины.
+"""Транслятор Forth -> бинарный машинный код стековой машины.
 
-Этапы: tokenize → _compile_tokens → layout → emit.
+Этапы: tokenize -> _compile_tokens -> layout -> emit.
 CLI: translator.py <source.fth> <target.bin> [--debug]
 """
 
@@ -86,13 +86,7 @@ _BYTES_PER_WORD = 4
 
 
 def _wlen(code: list[Instruction]) -> int:
-    """Размер списка инструкций в БАЙТАХ.
-
-    Адресация байтовая: обычная инструкция = 4 байта (одно слово),
-    LIT = 8 байт (опкод-слово + слово-значение). Все адреса, которые
-    строятся через _wlen (цели JMP/JZ/CALL, базы секций, адреса данных),
-    автоматически получаются байтовыми.
-    """
+    """Размер списка инструкций в байтах (каждая инструкция = 4 байта, LIT = 8 байт)."""
     return sum(8 if i["opcode"] == Opcode.LIT else 4 for i in code)
 
 
@@ -113,7 +107,7 @@ def _build_print_cstr(offset: int) -> tuple[list[Instruction], int]:
     _op(code, Opcode.JZ, 0)
     _lit(code, _MMIO_OUT)
     _op(code, Opcode.STORE)
-    _lit(code, 4)  # шаг к следующему символу: 1 ячейка = 4 байта
+    _lit(code, 4)  
     _op(code, Opcode.ADD)
     _op(code, Opcode.JMP, loop)
     exit_pc = offset + _wlen(code)
@@ -129,13 +123,13 @@ def _build_print_num(offset: int) -> tuple[list[Instruction], int]:
 
     offset - абсолютный байтовый адрес первой инструкции.
     Выводит десятичное представление знакового числа.
+
     """
     code: list[Instruction] = []
 
     def w() -> int:
         return offset + _wlen(code)
 
-    # Проверка на ноль: если n=0 → вывести '0' и выйти
     _op(code, Opcode.DUP)
     _lit(code, 0)
     _op(code, Opcode.EQ)
@@ -166,16 +160,16 @@ def _build_print_num(offset: int) -> tuple[list[Instruction], int]:
     _op(code, Opcode.DROP)
 
     _lit(code, 0)
-    _op(code, Opcode.SWAP)  # (n, counter) → (counter, n): TOS=n, NOS=counter
+    _op(code, Opcode.SWAP)  # (n, counter) -> (counter, n): TOS=n, NOS=counter
     push_loop = w()
-    # стек TOS=n, NOS=counter. Если n=0 → выйти.
+    # стек TOS=n, NOS=counter. Если n=0 -> выйти.
     _op(code, Opcode.DUP)
     jz_push = len(code)
-    _op(code, Opcode.JZ, 0)  # JZ снимает дубль; если n=0 → exit
+    _op(code, Opcode.JZ, 0)  # JZ снимает дубль; если n=0 -> exit
     _op(code, Opcode.DUP)
     _lit(code, 10)
     _op(code, Opcode.MOD)
-    _op(code, Opcode.TO_R)  # digit → RS
+    _op(code, Opcode.TO_R)  # digit -> RS
     _lit(code, 10)
     _op(code, Opcode.DIV)  # n/10
     _op(code, Opcode.SWAP)
@@ -187,10 +181,10 @@ def _build_print_num(offset: int) -> tuple[list[Instruction], int]:
     _op(code, Opcode.DROP)  # drop n=0
 
     pop_loop = w()
-    # стек: (counter). Если counter=0 → завершить.
+    # стек: (counter). Если counter=0 -> завершить.
     _op(code, Opcode.DUP)
     jz_pop = len(code)
-    _op(code, Opcode.JZ, 0)  # JZ снимает дубль; если 0 → done
+    _op(code, Opcode.JZ, 0)  # JZ снимает дубль; если 0 -> done
     _lit(code, 1)
     _op(code, Opcode.SUB)
     _op(code, Opcode.R_FROM)
@@ -282,15 +276,15 @@ def _handle_special(  # noqa: C901
         return idx, False, []  # cur будет заменён в caller на main_code
 
     if tok == "if":
-        ctrl.append(len(cur))  # instruction index for backpatch
+        ctrl.append(len(cur))  # индекс if для обратной заплатки
         _op(cur, Opcode.JZ, 0)
         return idx, in_def, cur
 
     if tok == "else":
         jz_ii = ctrl.pop()
-        ctrl.append(len(cur))  # instruction index of JMP for backpatch
+        ctrl.append(len(cur))  # индекс jmp для обратной заплатки
         _op(cur, Opcode.JMP, 0)
-        cur[jz_ii]["operand"] = _wlen(cur)  # JZ target = word offset after JMP
+        cur[jz_ii]["operand"] = _wlen(cur) 
         return idx, in_def, cur
 
     if tok == "then":
@@ -299,7 +293,7 @@ def _handle_special(  # noqa: C901
         return idx, in_def, cur
 
     if tok == "begin":
-        ctrl.append(_wlen(cur))  # word offset - jump target
+        ctrl.append(_wlen(cur))  # таргет для джампа
         return idx, in_def, cur
 
     if tok == "until":
@@ -311,15 +305,15 @@ def _handle_special(  # noqa: C901
         return idx, in_def, cur
 
     if tok == "while":
-        ctrl.append(len(cur))  # instruction index of JZ for backpatch
+        ctrl.append(len(cur))  # заплатка для джз
         _op(cur, Opcode.JZ, 0)
         return idx, in_def, cur
 
     if tok == "repeat":
-        jz_ii = ctrl.pop()  # instruction index of JZ (from while)
-        begin_w = ctrl.pop()  # word offset of begin target
+        jz_ii = ctrl.pop()  # индекс джз для обратной заплатки
+        begin_w = ctrl.pop()  # начало таргета
         _op(cur, Opcode.JMP, begin_w)
-        cur[jz_ii]["operand"] = _wlen(cur)  # JZ target = word offset after JMP
+        cur[jz_ii]["operand"] = _wlen(cur)  # джз таргет
         return idx, in_def, cur
 
     if tok == "variable":
@@ -409,8 +403,6 @@ _COMPOUND: dict[str, list[tuple[bool, Opcode | int]]] = {
     "<=": [(False, Opcode.GT), (False, Opcode.INVERT)],
     "2dup": [(False, Opcode.OVER), (False, Opcode.OVER)],
     "2drop": [(False, Opcode.DROP), (False, Opcode.DROP)],
-    # Байтовая адресация: 1 ячейка = 4 байта. cells/chars — масштаб индекса,
-    # cell+/char+ — переход к следующей ячейке.
     "cells": [(True, 4), (False, Opcode.MUL)],
     "chars": [(True, 4), (False, Opcode.MUL)],
     "cell+": [(True, 4), (False, Opcode.ADD)],
@@ -559,7 +551,7 @@ def _layout(
     main_code: list[Instruction],
     data_section: list[int],
 ) -> list[Instruction]:
-    word_base = _BYTES_PER_WORD + _wlen(runtime)  # после ведущего JMP (1 слово = 4 байта)
+    word_base = _BYTES_PER_WORD + _wlen(runtime)  
     main_base = word_base + _wlen(word_code)
     _patch_cf(word_code, word_base)
     _patch_cf(main_code, main_base)

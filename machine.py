@@ -53,13 +53,13 @@ _MEM_SIZE = 65536
 _DS_SIZE = 256
 _RS_SIZE = 256
 
-# Таблица арифметических/побитовых ALU-операций (без сравнений)
+# Таблица арифметических/побитовых ALU-операций
 _ALU_OPS: dict[AluOpSel, Callable[[int, int], int]] = {
     AluOpSel.Add: lambda a, b: a + b,
     AluOpSel.Sub: lambda a, b: a - b,
     AluOpSel.Mul: lambda a, b: a * b,
-    AluOpSel.Div: lambda a, b: int(a / b),  # округление к нулю
-    AluOpSel.Mod: lambda a, b: a - int(a / b) * b,  # знак от делимого
+    AluOpSel.Div: lambda a, b: int(a / b),  
+    AluOpSel.Mod: lambda a, b: a - int(a / b) * b, 
     AluOpSel.And: lambda a, b: a & b,
     AluOpSel.Or: lambda a, b: a | b,
     AluOpSel.Invert: lambda a, b: ~b,  # унарная, a не используется
@@ -131,11 +131,10 @@ class DataPath:
         self.mar: int = 0
         self.mdr: int = 0
         self._alu_result: int = 0
-        # SRAM стеков
+        
         self._ds: list[int] = [0] * _DS_SIZE
         self._rs: list[int] = [0] * _RS_SIZE
 
-    # Флаги - combinational от TOS
     @property
     def flag_z(self) -> bool:
         """Zero: TOS == 0."""
@@ -152,7 +151,7 @@ class DataPath:
         return self.ir & 0x00FFFFFF
 
     def latch_pc(self, sel: PcSel) -> None:
-        """PC ← (sel). Адресация байтовая: следующее слово = PC+4."""
+        """PC <- (sel). Адресация байтовая: следующее слово = PC+4."""
         if sel == PcSel.Next:
             self.pc += 4
         elif sel == PcSel.Jmp:
@@ -160,28 +159,27 @@ class DataPath:
         elif sel == PcSel.Jz:
             if self.flag_z:
                 self.pc = self.ir_operand
-            # иначе PC уже инкрементирован в FETCH, оставляем как есть
         elif sel == PcSel.FromTors:
             self.pc = self.tors
         elif sel == PcSel.FromTos:
             self.pc = self.tos
 
     def latch_ir(self) -> None:
-        """IR ← MDR."""
+        """IR <- MDR."""
         self.ir = self.mdr
 
     def latch_mar(self, sel: MarSel) -> None:
-        """MAR ← (sel)."""
+        """MAR <- (sel)."""
         if sel == MarSel.FromPc:
             self.mar = self.pc
         elif sel == MarSel.FromTos:
             self.mar = self.tos
 
     def latch_mdr(self, sel: MdrSel) -> None:
-        """MDR ← (sel)."""
+        """MDR <- (sel)."""
         if sel == MdrSel.FromMem:
             raw = self._cache.response()
-            # Знаковое расширение: 32-битное unsigned → signed Python int
+            # Знаковое расширение 
             self.mdr = (raw + 0x80000000) % 0x100000000 - 0x80000000
         elif sel == MdrSel.FromNos:
             self.mdr = self.nos
@@ -189,9 +187,8 @@ class DataPath:
             self.mdr = self.tos
 
     def latch_tos(self, sel: TosSel) -> None:
-        """TOS ← (sel)."""
+        """TOS <- (sel)."""
         if sel == TosSel.FromAlu:
-            # ALU результат уже лежит в _alu_result, выставленном alu_op()
             self.tos = self._alu_result
         elif sel == TosSel.FromMdr:
             self.tos = self.mdr
@@ -201,49 +198,37 @@ class DataPath:
             self.tos = self.tors
 
     def latch_nos(self, sel: NosSel) -> None:
-        """NOS ← (sel). Только для SWAP (без push/pop)."""
+        """NOS <- (sel). Только для SWAP (без push/pop)."""
         if sel == NosSel.FromTos:
             self.nos = self.tos
         elif sel == NosSel.FromMdr:
             self.nos = self.mdr
 
     def latch_tors(self, sel: TorsSel) -> None:
-        """TORS ← (sel)."""
+        """TORS <- (sel)."""
         if sel == TorsSel.FromPc:
             self.tors = self.pc
         elif sel == TorsSel.FromTos:
             self.tors = self.tos
 
     def dstack_push(self) -> None:
-        """DS_SRAM[DSP] ← NOS; DSP++; NOS ← TOS."""
+        """DS_SRAM[DSP] <- NOS; DSP++; NOS <- TOS."""
         self._ds[self.dsp] = self.nos
         self.dsp = (self.dsp + 1) & 0xFF
         self.nos = self.tos
 
     def dstack_pop(self) -> None:
-        """DSP--; NOS ← DS_SRAM[DSP]."""
+        """DSP--; NOS <- DS_SRAM[DSP]."""
         self.dsp = (self.dsp - 1) & 0xFF
         self.nos = self._ds[self.dsp]
 
     def rstack_push(self) -> None:
-        """RS_SRAM[RSP] ← TORS; RSP++."""
+        """RS_SRAM[RSP] <- TORS; RSP++."""
         self._rs[self.rsp] = self.tors
         self.rsp = (self.rsp + 1) & 0xFF
 
     def rstack_pop(self) -> None:
-        """RSP ← RSP-1; TORS ← RS_SRAM[RSP-1] (после декремента).
-
-        RSP указывает на первый свободный слот. Снимаемое значение
-        (старая вершина) уже извлечено вызывающим до pop: RET читает PC
-        из TORS, а R> копирует TORS в TOS. Поэтому pop лишь ВОССТАНАВЛИВАЕТ
-        TORS родительского кадра.
-
-        push кладёт в SRAM то значение TORS, что было активно при входе в
-        кадр (CALL делает TORS←PC ДО push, см. microcode CALL/TO_R). Значит
-        TORS родителя лежит в RS[RSP_new-1], и читается именно оттуда.
-        Симметрии с dstack_pop (читает RS[RSP_new]) здесь нет намеренно:
-        у data-стека push сохраняет NOS, у return-стека - сам TORS.
-        """
+        """RSP <- RSP-1; TORS <- RS_SRAM[RSP-1]."""
         self.rsp = (self.rsp - 1) & 0xFF
         self.tors = self._rs[(self.rsp - 1) & 0xFF]
 
@@ -261,7 +246,6 @@ class DataPath:
 
     def _alu(self, op: AluOpSel, a: int, b: int) -> int:
         """Вычислить ALU-операцию. Результат - знаковое 32-битное."""
-        # Сравнения возвращают Forth-флаг (-1/0) без нормализации
         if op == AluOpSel.Eq:
             return -1 if a == b else 0
         if op == AluOpSel.Lt:

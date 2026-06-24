@@ -46,7 +46,7 @@ def test_line_fill_first_miss_rest_hits() -> None:
     assert cache.response() == 0
     assert cache.stats.misses == 1
 
-    # Остальные 3 слова той же строки (байтовые адреса 4, 8, 12) — HIT.
+    # Остальные 3 слова той же строки (байтовые адреса 4, 8, 12) - HIT.
     for word_idx in (1, 2, 3):
         cache.request(word_idx * 4, "read")
         _run(cache)
@@ -62,7 +62,7 @@ def test_eviction_clean_no_writeback() -> None:
     _run(cache)
     assert cache.stats.misses == 1
 
-    # Адрес 64 (слово 16) попадает в ту же строку, что и 0 — вытеснение.
+    # Адрес 64 (слово 16) попадает в ту же строку, что и 0 - вытеснение.
     cache.request(64, "read")
     _run(cache)
     assert cache.response() == 16
@@ -87,18 +87,18 @@ def test_eviction_dirty_writeback() -> None:
 def test_write_allocate_on_miss() -> None:
     cache, ram = make_cache()
 
-    # Запись по байту 16 (слово 4, строка index=1) — write-allocate (MISS).
+    # Запись по байту 16 (слово 4, строка index=1) - write-allocate (MISS).
     cache.request(16, "write", data=77)
     _run(cache)
     assert cache.stats == CacheStats(hits=0, misses=1, writebacks=0)
 
-    # Байт 20 (слово 5) — та же строка → HIT, значение слова 5.
+    # Байт 20 (слово 5) - та же строка -> HIT, значение слова 5.
     cache.request(20, "read")
     _run(cache)
     assert cache.response() == 5
     assert cache.stats == CacheStats(hits=1, misses=1, writebacks=0)
 
-    # Байт 80 (слово 20, та же строка index=1, другой tag) — вытеснение грязной.
+    # Байт 80 (слово 20, та же строка index=1, другой tag) - вытеснение грязной.
     cache.request(80, "read")
     _run(cache)
     assert ram.read(16) == 77
@@ -123,7 +123,6 @@ def test_write_hit_after_write_allocate() -> None:
 
 
 def test_mmio_bypass(monkeypatch: pytest.MonkeyPatch) -> None:
-    # Патчим MMIO_BASE на маленький адрес чтобы не аллоцировать гигантскую RAM
     mmio_addr = 200
     monkeypatch.setattr(cache_mod, "MMIO_BASE", mmio_addr)
 
@@ -167,7 +166,6 @@ def test_timing_hit_ticks() -> None:
     cache.request(0, "read")
     _run(cache)
 
-    # HIT завершается внутри request() - кеш не busy, 0 дополнительных тиков
     cache.request(0, "read")
     assert not cache.is_busy()
     ticks = 0
@@ -182,6 +180,5 @@ def test_split_roundtrip(byte_addr: int) -> None:
     from cache import _split
 
     tag, index, offset = _split(byte_addr)
-    # Реконструкция: собираем адрес слова, затем обратно в байтовый (<<2).
     reconstructed = ((tag << 4) | (index << 2) | offset) << 2
     assert reconstructed == byte_addr

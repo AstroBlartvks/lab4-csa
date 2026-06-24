@@ -68,7 +68,7 @@ class Opcode(IntEnum):
 class Instruction(TypedDict, total=False):
     """Одна инструкция в списке машинного кода.
 
-    ``opcode`` и ``operand`` обязательны; ``term`` - опционально (строка исходника для дебага).
+    ``opcode`` и ``operand`` обязательны.
     """
 
     opcode: Opcode
@@ -108,8 +108,6 @@ MNEMONICS: dict[Opcode, str] = {
 }
 
 MNEMONIC_TO_OPCODE: dict[str, Opcode] = {mnem: op for op, mnem in MNEMONICS.items()}
-
-# Опкоды с операндом (24-битное поле используется для адреса)
 _HAS_OPERAND: frozenset[Opcode] = frozenset({Opcode.JMP, Opcode.JZ, Opcode.CALL})
 
 
@@ -151,7 +149,6 @@ def to_bytes(code: list[Instruction]) -> bytes:
         opcode: Opcode = instr["opcode"]
         operand: int = instr.get("operand", 0)
         if opcode == Opcode.LIT:
-            # opcode-слово не несёт операнда; значение - в следующем слове
             words.append(encode_instruction(opcode, 0))
             words.append(operand & 0xFFFFFFFF)
         else:
@@ -180,7 +177,6 @@ def from_bytes(binary: bytes) -> list[Instruction]:
         if opcode == Opcode.LIT:
             i += 1
             value = words[i] if i < len(words) else 0
-            # знаковое 32-битное
             if value >= 0x80000000:
                 value -= 0x100000000
             result.append({"opcode": opcode, "operand": value})

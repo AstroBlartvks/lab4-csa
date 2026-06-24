@@ -102,7 +102,6 @@ class Cache:
         self._cache: list[_Line] = [_Line(data=[0] * self._wpl) for _ in range(1 << _INDEX_BITS)]
         self.stats = CacheStats()
 
-        # Состояние текущего запроса
         self._busy = False
         self._stall: int = 0
         self._op: _Op = _Op.Read
@@ -123,7 +122,6 @@ class Cache:
         self._busy = True
 
         if addr >= MMIO_BASE:
-            # MMIO bypass - 1 такт, без stall
             self._stall = 0
             return
 
@@ -171,7 +169,7 @@ class Cache:
         if self._stall > 0:
             self._stall -= 1
             return
-        # Stall исчерпан - выполняем операцию
+        
         self._execute()
         self._busy = False
 
@@ -194,14 +192,12 @@ class Cache:
         tag, index, offset = _split(addr)
         line = self._cache[index]
 
-        # Writeback грязной вытесняемой строки
         if line.valid and line.tag != tag and line.dirty:
             old_base = _line_byte_base(line.tag, index)
             for i in range(self._wpl):
                 self._ram.write(old_base + i * 4, line.data[i])
             line.dirty = False
 
-        # Загрузка строки (miss)
         if not line.valid or line.tag != tag:
             line_base = _line_byte_base(tag, index)
             line.data = [self._ram.read(line_base + i * 4) for i in range(self._wpl)]
@@ -209,7 +205,6 @@ class Cache:
             line.valid = True
             line.dirty = False
 
-        # Выполняем операцию
         if self._op == _Op.Read:
             self._result = line.data[offset]
         else:
@@ -231,7 +226,6 @@ class Cache:
             else:
                 self._mmio.write(addr, data)
         else:
-            # Заглушка: используется в тестах cache без machine
             if op == _Op.Read:
                 self._result = self._ram.read(addr)
             else:
@@ -239,7 +233,7 @@ class Cache:
 
 
 def _split(byte_addr: int) -> tuple[int, int, int]:
-    """Разбить БАЙТОВЫЙ адрес (выровнен на 4) на (tag, index, offset).
+    """Разбить адрес на (tag, index, offset).
 
     Сначала переходим к адресу слова (byte_addr >> 2), затем как раньше:
     offset - слово внутри строки, index - номер строки, tag - остальное.

@@ -12,14 +12,10 @@ from isa import to_hex
 from machine import simulation
 from translator import translate
 
-# Формат журнала совпадает с machine.basicConfig (раздел __main__).
 _LOG_FORMAT = "%(levelname)-7s %(module)s:%(funcName)-13s %(message)s"
 
-# Логгеры, которые попадают в журнал процессора: такты машины и события кеша.
 _PROC_LOGGERS = ("machine", "cache")
 
-# Размер «окна» журнала: начало (старт) + конец (HALT). Середина — длинные
-# повторяющиеся stall'ы и тело циклов — схлопывается в одну пометку.
 _HEAD = 80
 _TAIL = 40
 
