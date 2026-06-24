@@ -169,7 +169,7 @@ class Cache:
         if self._stall > 0:
             self._stall -= 1
             return
-        
+
         self._execute()
         self._busy = False
 

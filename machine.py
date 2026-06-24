@@ -58,8 +58,8 @@ _ALU_OPS: dict[AluOpSel, Callable[[int, int], int]] = {
     AluOpSel.Add: lambda a, b: a + b,
     AluOpSel.Sub: lambda a, b: a - b,
     AluOpSel.Mul: lambda a, b: a * b,
-    AluOpSel.Div: lambda a, b: int(a / b),  
-    AluOpSel.Mod: lambda a, b: a - int(a / b) * b, 
+    AluOpSel.Div: lambda a, b: int(a / b),
+    AluOpSel.Mod: lambda a, b: a - int(a / b) * b,
     AluOpSel.And: lambda a, b: a & b,
     AluOpSel.Or: lambda a, b: a | b,
     AluOpSel.Invert: lambda a, b: ~b,  # унарная, a не используется
@@ -131,7 +131,7 @@ class DataPath:
         self.mar: int = 0
         self.mdr: int = 0
         self._alu_result: int = 0
-        
+
         self._ds: list[int] = [0] * _DS_SIZE
         self._rs: list[int] = [0] * _RS_SIZE
 
@@ -179,7 +179,7 @@ class DataPath:
         """MDR <- (sel)."""
         if sel == MdrSel.FromMem:
             raw = self._cache.response()
-            # Знаковое расширение 
+            # Знаковое расширение
             self.mdr = (raw + 0x80000000) % 0x100000000 - 0x80000000
         elif sel == MdrSel.FromNos:
             self.mdr = self.nos

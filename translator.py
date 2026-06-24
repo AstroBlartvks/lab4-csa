@@ -107,7 +107,7 @@ def _build_print_cstr(offset: int) -> tuple[list[Instruction], int]:
     _op(code, Opcode.JZ, 0)
     _lit(code, _MMIO_OUT)
     _op(code, Opcode.STORE)
-    _lit(code, 4)  
+    _lit(code, 4)
     _op(code, Opcode.ADD)
     _op(code, Opcode.JMP, loop)
     exit_pc = offset + _wlen(code)
@@ -284,7 +284,7 @@ def _handle_special(  # noqa: C901
         jz_ii = ctrl.pop()
         ctrl.append(len(cur))  # индекс jmp для обратной заплатки
         _op(cur, Opcode.JMP, 0)
-        cur[jz_ii]["operand"] = _wlen(cur) 
+        cur[jz_ii]["operand"] = _wlen(cur)
         return idx, in_def, cur
 
     if tok == "then":
@@ -551,7 +551,7 @@ def _layout(
     main_code: list[Instruction],
     data_section: list[int],
 ) -> list[Instruction]:
-    word_base = _BYTES_PER_WORD + _wlen(runtime)  
+    word_base = _BYTES_PER_WORD + _wlen(runtime)
     main_base = word_base + _wlen(word_code)
     _patch_cf(word_code, word_base)
     _patch_cf(main_code, main_base)
